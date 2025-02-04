@@ -113,6 +113,19 @@ export const addProductFormElements = [
       type: "number",
       placeholder: "Enter total stock",
     },
+    {
+      label: "Size",
+      name: "sizes",  // New name for the sizes field
+      componantType: "checkbox",  // The component type is 'checkbox'
+      options: [
+        { id: "small", label: "Small" },
+        { id: "medium", label: "Medium" },
+        { id: "large", label: "Large" },
+        { id: "xl", label: "XL" },
+        { id: "xxl", label: "XXL" },
+      ],
+    },
+  
   ];
   export const shoopingViewMenuItems=[
     {

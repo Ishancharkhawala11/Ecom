@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { Checkbox } from "../ui/checkbox";
 
 const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonText, isBtnDisabled }) => {
   const [showPassword, setShowPassword] = useState({});
@@ -45,6 +46,29 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
           </div>
         );
         break;
+        case "checkbox":
+          element = (
+            <div className="grid grid-cols-2 gap-2">
+              {getControlItem.options?.map((option) => (
+                <div key={option.id} className="flex items-center">
+                <Checkbox
+                id={option.id}
+                name={getControlItem.name}
+                value={option.id}
+                checked={value.includes(option.id)}
+                onCheckedChange={(checked) => {
+                  const newSizes = checked
+                    ? [...value, option.id]
+                    : value.filter((size) => size !== option.id);
+                  setFormdata({ ...formData, [getControlItem.name]: newSizes });
+                }}
+              />
+                  <label htmlFor={option.id} className="ml-2">{option.label}</label>
+                </div>
+              ))}
+            </div>
+          );
+          break;
       case "select":
         element = (
           <Select
