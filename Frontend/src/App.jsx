@@ -25,6 +25,9 @@ import Shopping_order from "./pages/admin/Shopping_order";
 import Paypal_return from "./pages/shopping/paypal_return";
 import Payment_success from "./pages/shopping/payment_success";
 import Search_Product from "./pages/shopping/Search_page";
+import Forgot_password from "./pages/auth/Forgot_password";
+import Otp_verfy from "./pages/auth/Otp_verfy";
+import Update_password from "./pages/auth/Update_password";
 
 function App() {
   // const isAuthenticated = false;
@@ -57,6 +60,9 @@ function App() {
         >
           <Route path="login" element={<Login></Login>}></Route>
           <Route path="register" element={<Register></Register>}></Route>
+          <Route path="forgot" element={<Forgot_password/>}></Route>
+          <Route path="otp" element={<Otp_verfy/>}></Route>
+          <Route path="reset-password" element={<Update_password/>}></Route>
         </Route>
         <Route
           path="/admin"

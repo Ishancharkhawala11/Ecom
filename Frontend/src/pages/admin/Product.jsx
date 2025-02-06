@@ -144,7 +144,7 @@ dispetch(DeleteProduct(getCurrentProductId)).then((data)=>{
             <CommonForm
               onSubmit={onSubmit}
               formData={formData}
-              setFormdata={setFormData}
+              setFormData={setFormData}
               buttonText={`${currentEditedId !== null ? "Edit" : "Add"}`}
               formControlers={addProductFormElements}
               isBtnDisabled={!isFormValid()}

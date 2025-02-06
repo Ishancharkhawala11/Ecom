@@ -108,11 +108,11 @@ const Admin_Order_details = ({orderDetails}) => {
 
       <div>
         <CommonForm
-          formControls={[
+          formControlers={[
             {
               label: "Order Status",
               name: "status",
-              componentType: "select",
+              componantType: "select",
               options: [
                 { id: "pending", label: "Pending" },
                 { id: "inProcess", label: "In Process" },

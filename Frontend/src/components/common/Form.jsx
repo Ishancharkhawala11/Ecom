@@ -1,51 +1,87 @@
 import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { FiLoader } from "react-icons/fi";
 
-const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonText, isBtnDisabled }) => {
+const CommonForm = ({
+  formControlers,
+  formData,
+  setFormData,
+  onSubmit,
+  buttonText,
+  isBtnDisabled,
+  forgotPassword = false,
+  error = {},
+  handleEmailChange, // Add handleEmailChange prop
+}) => {
   const [showPassword, setShowPassword] = useState({});
+  const {isLoading}=useSelector(state=>state.auth)
+  // const location=useLocation()
+// console.log(error,'email');
+// console.log("Received props in CommonForm:", { handleEmailChange });
 
   const togglePasswordVisibility = (name) => {
     setShowPassword((prev) => ({ ...prev, [name]: !prev[name] }));
   };
-
   const renderInputsByComponantType = (getControlItem) => {
     let element = null;
     const value = formData[getControlItem.name] || "";
 
     switch (getControlItem.componantType) {
       case "input":
-        element = (
-          <div className="relative">
-            <Input
-              name={getControlItem.name}
-              placeholder={getControlItem.placeholder}
-              id={getControlItem.name}
-              type={
-                getControlItem.name === "password" && showPassword[getControlItem.name]
-                  ? "text"
-                  : getControlItem.name
-              }
-              value={value}
-              onChange={(e) => setFormdata({ ...formData, [getControlItem.name]: e.target.value })}
-            />
-            {getControlItem.name === "password" && (
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center"
-                onClick={() => togglePasswordVisibility(getControlItem.name)}
-              >
-                {showPassword[getControlItem.name] ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            )}
-          </div>
-        );
-        break;
+  element = (
+    <div className="relative">
+      <Input
+        name={getControlItem.name}
+        placeholder={getControlItem.placeholder}
+        id={getControlItem.name}
+        type={
+          getControlItem.name === "password" && showPassword[getControlItem.name]
+            ? "text"
+            : getControlItem.type || "text"
+        }
+        value={value}
+        onChange={(e) => {
+          const newval=e.target.value
+          console.log(getControlItem.name);
+          // console.log(error)
+          if (getControlItem.name === "email" ||getControlItem.name==='otp') {
+            
+            handleEmailChange(e); 
+          }
+          setFormData((prevData) => ({
+            ...prevData,
+            [getControlItem.name]: newval,
+          }));
+        }}
+      />
+      {getControlItem.name === "password" && (
+        <button
+          type="button"
+          className="absolute inset-y-0 right-3 flex items-center"
+          onClick={() => togglePasswordVisibility(getControlItem.name)}
+        >
+          {showPassword[getControlItem.name] ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
+      )}
+    </div>
+  );
+  break;
+
         case "checkbox":
           element = (
             <div className="grid grid-cols-2 gap-2">
@@ -60,7 +96,7 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
                   const newSizes = checked
                     ? [...value, option.id]
                     : value.filter((size) => size !== option.id);
-                  setFormdata({ ...formData, [getControlItem.name]: newSizes });
+                  setFormData({ ...formData, [getControlItem.name]: newSizes });
                 }}
               />
                   <label htmlFor={option.id} className="ml-2">{option.label}</label>
@@ -72,7 +108,7 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
       case "select":
         element = (
           <Select
-            onValueChange={(value) => setFormdata({
+            onValueChange={(value) => setFormData({
               ...formData,
               [getControlItem.name]: value,
             })}
@@ -100,7 +136,7 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
             placeholder={getControlItem.placeholder}
             id={getControlItem.id}
             value={value}
-            onChange={(e) => setFormdata({ ...formData, [getControlItem.name]: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, [getControlItem.name]: e.target.value })}
           />
         );
         break;
@@ -112,7 +148,7 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
             id={getControlItem.name}
             type={getControlItem.type}
             value={value}
-            onChange={(e) => setFormdata({ ...formData, [getControlItem.name]: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, [getControlItem.name]: e.target.value })}
           />
         );
         break;
@@ -127,11 +163,29 @@ const CommonForm = ({ formControlers, formData, setFormdata, onSubmit, buttonTex
           <div className="grid w-full gap-1.5" key={controlItem.name}>
             <Label className="mb-1">{controlItem.label}</Label>
             {renderInputsByComponantType(controlItem)}
+            {controlItem.name === "email" && error.emailError && (
+              <p className="text-red-500 text-sm">{error.emailError}</p>
+            )}
+            {controlItem.name === "otp" && error.otpError&& (
+              <p className="text-red-500 text-sm">{error.otpError}</p>
+            )}
           </div>
         ))}
       </div>
-      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
-        {buttonText || "Submit"}
+      {forgotPassword ? (
+        <div className="flex justify-end mt-5 mb-5">
+          <Link to='/auth/forgot' className="font-medium hover:text-gray-400">
+            forgot password ?
+          </Link>
+        </div>
+      ) : null}
+
+      <Button
+        disabled={isBtnDisabled}
+        type="submit"
+        className={`mt-2 w-full flex items-center justify-center space-x-2 cursor-pointer`}
+      >
+        {isLoading? <FiLoader className="animate-spin h-5 w-5"/>:buttonText }
       </Button>
     </form>
   );

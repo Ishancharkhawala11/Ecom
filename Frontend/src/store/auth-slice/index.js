@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
+  OtpSent:false,
 };
 
 export const registerUser = createAsyncThunk(
@@ -86,12 +88,23 @@ export const checkAuth = createAsyncThunk(
     return response.json();
   }
 );
-
+export const forgotPassword=createAsyncThunk('auth/forgot',async(email)=>{
+  const response=await axios.post('http://localhost:5000/api/auth/forgot',email)
+  return response.data;
+})
+export const verifyOtp=createAsyncThunk('auth/verify',async({formData})=>{
+  const response=await axios.post('http://localhost:5000/api/auth/verify',formData)
+  return response.data
+})
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     setUser: (state, action) => {},
+    clearOtpState: (state) => {
+      state.OtpSent = false;
+      // state.otpError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -138,9 +151,44 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
+      }).addCase(forgotPassword.pending, (state, action) => {
+        state.isLoading = true;
+       state.OtpSent=false;
+       state.isAuthenticated=false
+       state.OtpSent=false
+      //  state.OtpData=null
+       
+      })
+      .addCase(forgotPassword.rejected, (state) => {
+        state.isLoading = false;
+        state.OtpSent=false;
+        state.isAuthenticated=false;
+        state.OtpSent=false
+
+        // state.user = null;
+        // state.isAuthenticated = false;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isLoading = false;
+        state.OtpSent = true;
+        state.isAuthenticated = false;
+        state.OtpSent=true
+      })
+      .addCase(verifyOtp.pending, (state) => {
+        state.isLoading = true;
+        state.isAuthenticated=false
+      })
+      .addCase(verifyOtp.fulfilled, (state, ) => {
+      state.isLoading=false;
+      state.isAuthenticated=false
+        
+      })
+      .addCase(verifyOtp.rejected, (state) => {
+      state.isLoading=false
+      state.isAuthenticated=false
       });
   },
 });
 
-export const { setUser } = authSlice.actions;
+export const { setUser,clearOtpState } = authSlice.actions;
 export default authSlice.reducer;

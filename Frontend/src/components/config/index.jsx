@@ -18,8 +18,28 @@ export const registerFormControl=[
         label:"password",
         placeholder:"Enter your password",
         componantType:'input',
-        type:'text'
+        type:'password'
     }
+];
+export const forgotPasswordFormControl=[
+ 
+  {
+      name:"email",
+      label:"email",
+      placeholder:"Enter your email",
+      componantType:'input',
+      type:'email'
+  },
+];
+export const OtpFormControl=[
+ 
+  {
+      name:"otp",
+      label:"",
+      placeholder:"Enter your otp",
+      componantType:'input',
+      type:'text'
+  },
 ];
 export const LoginFormControl=[
  
@@ -28,13 +48,13 @@ export const LoginFormControl=[
         label:"email",
         placeholder:"Enter your email",
         componantType:'input',
-        type:'email'
+        type:'text'
     },{
         name:"password",
         label:"password",
         placeholder:"Enter your password",
         componantType:'input',
-        type:'text'
+        type:'password'
     }
 ];
 export const categoryOptionsMap = {
@@ -113,18 +133,7 @@ export const addProductFormElements = [
       type: "number",
       placeholder: "Enter total stock",
     },
-    {
-      label: "Size",
-      name: "sizes",  // New name for the sizes field
-      componantType: "checkbox",  // The component type is 'checkbox'
-      options: [
-        { id: "small", label: "Small" },
-        { id: "medium", label: "Medium" },
-        { id: "large", label: "Large" },
-        { id: "xl", label: "XL" },
-        { id: "xxl", label: "XXL" },
-      ],
-    },
+    
   
   ];
   export const shoopingViewMenuItems=[
