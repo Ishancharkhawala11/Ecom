@@ -96,6 +96,10 @@ export const verifyOtp=createAsyncThunk('auth/verify',async({formData})=>{
   const response=await axios.post('http://localhost:5000/api/auth/verify',formData)
   return response.data
 })
+export const resetPass=createAsyncThunk('auth/resetPass',async(formData)=>{
+  const response=await axios.post('http://localhost:5000/api/auth/reset',formData)
+  return response.data
+})
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -186,7 +190,20 @@ const authSlice = createSlice({
       .addCase(verifyOtp.rejected, (state) => {
       state.isLoading=false
       state.isAuthenticated=false
-      });
+      })
+      .addCase(resetPass.pending, (state) => {
+        state.isLoading = true;
+        state.isAuthenticated=false
+      })
+      .addCase(resetPass.fulfilled, (state, ) => {
+      state.isLoading=false;
+      state.isAuthenticated=false
+        
+      })
+      .addCase(resetPass.rejected, (state) => {
+      state.isLoading=false
+      state.isAuthenticated=false
+      })
   },
 });
 

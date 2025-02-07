@@ -97,10 +97,11 @@ const handleEditAddress=(getCurrentAddress)=>{
         <CommonForm 
         formControlers={addressFormControls}
         formData={formData}
-        setFormdata={setFormData}
+        setFormData={setFormData}
         buttonText={currentEditdId!==null?"Edit":"Add"}
         onSubmit={handleManangeAddress}
         isBtnDisabled={!isFormValid()}
+
         ></CommonForm>
       </CardContent>
     </Card>

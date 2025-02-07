@@ -1,7 +1,7 @@
 import CommonForm from '@/components/common/Form'
 import { OtpFormControl } from '@/components/config'
 import { toast } from '@/hooks/use-toast'
-import { verifyOtp } from '@/store/auth-slice'
+import { clearOtpState, verifyOtp } from '@/store/auth-slice'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -26,6 +26,7 @@ const Otp_verfy = () => {
                toast({
                  title:result.payload.message
                })
+              //  dispatch(clearOtpState())
                navigate('/auth/reset-password')
               //  navigate('/auth/otp')
              }else {

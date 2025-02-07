@@ -1,7 +1,10 @@
 const paypal = require("../../helpers/Paypal");
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
-const Product=require('../../models/product')
+const Product = require("../../models/product");
+const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
 const createOrder = async (req, res) => {
   try {
     const {
@@ -103,20 +106,21 @@ const captureOrder = async (req, res) => {
     order.orderStatus = "confirmed";
     order.paymentId = paymentId;
     order.payerId = payerId;
-    for(let item of order.cartItems){
-      let product=await Product.findById(item.productId)
-      if(! product){
+    for (let item of order.cartItems) {
+      let product = await Product.findById(item.productId);
+      if (!product) {
         return res.status(404).json({
-          success:false,
-          message:`Not enough stock of this product ${product.title}`
-        })
+          success: false,
+          message: `Not enough stock of this product ${product.title}`,
+        });
       }
-      product.totalStock-=item.quantity
-      await product.save()
+      product.totalStock -= item.quantity;
+      await product.save();
     }
     const getCartId = order.cartId;
     await Cart.findByIdAndDelete(getCartId);
     await order.save();
+    // await sendEmail(email,order)
     res.status(200).json({
       success: true,
       message: "Order confirm",
@@ -130,20 +134,48 @@ const captureOrder = async (req, res) => {
     });
   }
 };
-const getAllOrderByUser = async (req, res) => {
+const sendEmail = async (req, res) => {
   try {
-    const {userId}=req.params
-    const orders=await Order.find({userId})
-    if(! orders.length){
-      res.status(404).json({
-        success:false,
-        message:"No orders found"
-      })
+  const { orderId, email } = req.body;
+  let order = await Order.findById(orderId);
+  if (!order) {
+    return res.json({
+      success: false,
+      message: "Order can not be found",
+    });
+  }
+  const tempPath = path.join(__dirname, "../../helpers/Order.html");
+  let orderHtml = fs.readFileSync(tempPath, "utf8");
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ishan11012003@gmail.com",
+      pass: "sula fceb pbyz xqfu",
+    },
+  });
+  const message = {
+    from: "ishan11012003@gmail.com",
+    to: email,
+    subject: "Order COnfirmation Mail",
+    
+    html: orderHtml
+      .replaceAll("{{ORDER_NUMBER}}", order._id)
+      .replaceAll("{{ORDER_TOTAL}}", order.totalAmount),
+  };
+  transporter.sendMail(message, (error, info) => {
+    if (error) {
+      console.error("Error in sending email:", error);
+      return res.status(500).send({
+        message: "Failed to send Email of confirmation.",
+        success: false,
+      });
     }
-    res.status(200).json({
+    console.log("Email sent:", info.response);
+    res.json({
       success:true,
-      data:orders
+      message:'Email send Successfully'
     })
+  });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -153,24 +185,20 @@ const getAllOrderByUser = async (req, res) => {
   }
   
 };
-const getOrderDetails = async (req, res) => {
+const getAllOrderByUser = async (req, res) => {
   try {
-    const {id}=req.params
-    // console.log(id,'id');
-    
-    const order=await Order.findById(id)
-    // console.log(order,'order');
-    
-    if(! order){
-     return res.status(404).json({
-        success:false,
-        message:"Order not found"
-      })
+    const { userId } = req.params;
+    const orders = await Order.find({ userId });
+    if (!orders.length) {
+      res.status(404).json({
+        success: false,
+        message: "No orders found",
+      });
     }
     res.status(200).json({
-      success:true,
-      data:order
-    })
+      success: true,
+      data: orders,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -179,4 +207,36 @@ const getOrderDetails = async (req, res) => {
     });
   }
 };
-module.exports = { createOrder, captureOrder,getAllOrderByUser,getOrderDetails };
+const getOrderDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id,'id');
+
+    const order = await Order.findById(id);
+    // console.log(order,'order');
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: order,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
+};
+module.exports = {
+  createOrder,
+  captureOrder,
+  getAllOrderByUser,
+  getOrderDetails,
+  sendEmail
+};

@@ -31,6 +31,22 @@ export const forgotPasswordFormControl=[
       type:'email'
   },
 ];
+
+export const resetPasswordControl=[
+  {
+    name:"password",
+    label:"Enter password",
+    placeholder:"Enter your password",
+    componantType:'input',
+    type:'password'
+},
+{
+  name:"confirmPassword",
+  label:"Confirm password",
+  placeholder:"Enter your password",
+  componantType:'input',
+  type:'password'
+}];
 export const OtpFormControl=[
  
   {

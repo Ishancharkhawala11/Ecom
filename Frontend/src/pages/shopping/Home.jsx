@@ -52,6 +52,8 @@ const ShoppingHome = () => {
   const {featureImageList}=useSelector(state=>state.commonFeature)
   const slides = featureImageList.map((img) => img.image);
   useEffect(() => {
+    console.log(featureImageList,'images');
+    
     const timer = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
     }, 2000);

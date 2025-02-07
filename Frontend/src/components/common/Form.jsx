@@ -50,7 +50,7 @@ const CommonForm = ({
         placeholder={getControlItem.placeholder}
         id={getControlItem.name}
         type={
-          getControlItem.name === "password" && showPassword[getControlItem.name]
+          (getControlItem.name === "password"|| getControlItem.name === "confirmPassword") && showPassword[getControlItem.name]
             ? "text"
             : getControlItem.type || "text"
         }
@@ -75,7 +75,16 @@ const CommonForm = ({
           className="absolute inset-y-0 right-3 flex items-center"
           onClick={() => togglePasswordVisibility(getControlItem.name)}
         >
-          {showPassword[getControlItem.name] ? <EyeOff size={20} /> : <Eye size={20} />}
+          {showPassword[getControlItem.name] ? <Eye size={20} /> : <EyeOff size={20} />}
+        </button>
+      )}
+      {getControlItem.name === "confirmPassword" && (
+        <button
+          type="button"
+          className="absolute inset-y-0 right-3 flex items-center"
+          onClick={() => togglePasswordVisibility(getControlItem.name)}
+        >
+          {showPassword[getControlItem.name] ? <Eye size={20} /> : <EyeOff size={20} />}
         </button>
       )}
     </div>

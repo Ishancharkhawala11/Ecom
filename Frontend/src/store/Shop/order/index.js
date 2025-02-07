@@ -7,6 +7,7 @@ const initialState = {
   orderId: null,
   orderList: [],
   orderDetails: null,
+  mailSending:true,
 };
 
 export const createNewOrder = createAsyncThunk(
@@ -21,10 +22,20 @@ export const createNewOrder = createAsyncThunk(
 );
 export const capturePayment = createAsyncThunk(
   "/Order/capturePayment",
-  async ({ orderId, paymentId, payerId }) => {
+  async ({orderId, paymentId, payerId }) => {
     const response = await axios.post(
       "http://localhost:5000/api/shop/order/capture",
       { orderId, paymentId, payerId }
+    );
+    return response.data;
+  }
+);
+export const sendEmail = createAsyncThunk(
+  "/Order/sendEmail",
+  async ({orderId,email}) => {
+    const response = await axios.post(
+      "http://localhost:5000/api/shop/order/mail",
+      { email,orderId }
     );
     return response.data;
   }
@@ -73,7 +84,7 @@ const shopping_order_slice = createSlice({
         state.isLoading = false;
         state.approvalURL = null;
         state.orderId = null;
-      })
+      }).addCase(capturePayment.fulfilled)
       .addCase(getAllOrdersByUserId.pending, (state) => {
         state.isLoading = true;
       }).addCase(getAllOrdersByUserId.fulfilled, (state,action) => {
@@ -90,6 +101,14 @@ const shopping_order_slice = createSlice({
       }).addCase(getAllOrderDetails.rejected, (state) => {
         state.isLoading = false;
         state.orderDetails=null
+      }).addCase(sendEmail.fulfilled, (state,action) => {
+        // state.isLoading = false;
+        state.mailSending=false,
+        state.orderDetails=action.payload.data
+      }).addCase(sendEmail.rejected, (state) => {
+        // state.isLoading = false;
+        // state.orderDetails=null
+        state.mailSending=false
       })
   },
 });

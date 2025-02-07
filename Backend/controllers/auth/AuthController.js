@@ -188,7 +188,7 @@ const verify_otp=async(req,res)=>{
   try {
     const {email,otp}=req.body;
     // console.log(typeof(otp));
-    console.log(email,'emial');
+    // console.log(email,'emial');
     
     const redisData=await redisClient.get(email)
     if(!redisData){
@@ -238,6 +238,8 @@ const verify_otp=async(req,res)=>{
 const reset_password=async(req,res)=>{
   try {
     const {email,password,confirmPassword}=req.body
+    // console.log(email);
+    
     const user=await User.findOne({email,role:'user'})
     if(!user){
       return res.json({
