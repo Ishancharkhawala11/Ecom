@@ -41,7 +41,6 @@ const createOrder = async (req, res) => {
 
     await newOrder.save();
 
-    // If COD, update stock immediately
     if (paymentMethod === "cod") {
       for (let item of cartItems) {
         let product = await Product.findById(item.productId);
@@ -61,9 +60,7 @@ const createOrder = async (req, res) => {
         await product.save();
       }
 
-      // Clear the cart after placing the order
       await Cart.findByIdAndDelete(cartId);
-
       return res.status(201).json({
         success: true,
         message: "Order placed successfully with Cash on Delivery!",
@@ -71,7 +68,6 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // If PayPal, proceed with payment processing
     const create_payment_json = {
       intent: "sale",
       payer: { payment_method: "paypal" },
@@ -103,8 +99,7 @@ const createOrder = async (req, res) => {
       }
 
       const approvalURL = paymentInfo.links.find((link) => link.rel === "approval_url").href;
-
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         approvalURL: approvalURL,
         orderId: newOrder._id,
@@ -222,21 +217,12 @@ const getAllOrderByUser = async (req, res) => {
     const { userId } = req.params;
     const orders = await Order.find({ userId });
     if (!orders.length) {
-      res.status(404).json({
-        success: false,
-        message: "No orders found",
-      });
+      return res.status(404).json({ success: false, message: "No orders found" });
     }
-    res.status(200).json({
-      success: true,
-      data: orders,
-    });
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured",
-    });
+    res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
 const getOrderDetails = async (req, res) => {

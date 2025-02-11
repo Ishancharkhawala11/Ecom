@@ -29,7 +29,7 @@ cartItems.reduce((sum,currentItem)=>sum+(currentItem.salePrice>0?currentItem.sal
         <span className='font-bold'>Total</span>
         <span className='font-bold'>${totalAmount}</span>
     </div>
-    <Button onClick={()=>{
+    <Button disabled={cartItems.length===0} onClick={()=>{
       navigate('/shop/checkout')
       setOpenCartSheet(false) 
       }} className='w-full mt-6'>Check out</Button>

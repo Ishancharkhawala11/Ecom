@@ -21,6 +21,7 @@ import { ArrowUpDownIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useSearchParams } from "react-router-dom";
+import Product_Not_Found from "@/components/shopping/Product_Not_Found";
 
 const ShoppingListing = () => {
   const dispatch = useDispatch();
@@ -192,7 +193,7 @@ const ShoppingListing = () => {
             ))
           ) : (
             <div className="col-span-full text-center text-muted-foreground">
-              No products available.
+              <Product_Not_Found Item={'Products'}></Product_Not_Found>
             </div>
           )}
         </div>

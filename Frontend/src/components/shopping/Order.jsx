@@ -7,6 +7,7 @@ import Shopping_order_details from './Shopping_order_details';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllOrderDetails, getAllOrdersByUserId, resetSetOrderDetails } from '@/store/Shop/order';
 import { Badge } from '../ui/badge';
+import Product_Not_Found from './Product_Not_Found';
 
 const Shopping_Order = () => {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -79,7 +80,9 @@ console.log(orderDetails);
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan="5" className="text-center">No orders found.</TableCell>
+                <TableCell colSpan="5" className="text-center">
+                  <Product_Not_Found Item={'Order'}></Product_Not_Found>
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

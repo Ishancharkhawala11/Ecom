@@ -1,4 +1,5 @@
 import Product_details_dialog from "@/components/shopping/Product_details";
+import Product_Not_Found from "@/components/shopping/Product_Not_Found";
 import Shopping_Product_tile from "@/components/shopping/Product_tile";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -95,7 +96,7 @@ const Search_Product = () => {
       
       {!searchResults.length && (
         <div className="w-full text-2xl font-bold flex items-center justify-center">
-          Product not found
+          <Product_Not_Found  Item={'Products'}/>
         </div>
       )}
 
