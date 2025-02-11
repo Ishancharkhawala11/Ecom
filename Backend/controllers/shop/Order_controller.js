@@ -5,6 +5,8 @@ const Product = require("../../models/product");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
+const puppeteer = require("puppeteer");
+const User=require('../../models/User')
 const createOrder = async (req, res) => {
   try {
     const {
@@ -22,11 +24,57 @@ const createOrder = async (req, res) => {
       payerId,
     } = req.body;
 
+    const newOrder = new Order({
+      userId,
+      cartId,
+      cartItems,
+      addressInfo,
+      orderStatus,
+      totalAmount,
+      orderDate,
+      orderUpdateDate,
+      paymentMethod,
+      paymentStatus,
+      paymentId,
+      payerId,
+    });
+
+    await newOrder.save();
+
+    // If COD, update stock immediately
+    if (paymentMethod === "cod") {
+      for (let item of cartItems) {
+        let product = await Product.findById(item.productId);
+        if (!product) {
+          return res.status(404).json({
+            success: false,
+            message: `Product ${item.title} not found`,
+          });
+        }
+        if (product.totalStock < item.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Insufficient stock for product: ${item.title}`,
+          });
+        }
+        product.totalStock -= item.quantity;
+        await product.save();
+      }
+
+      // Clear the cart after placing the order
+      await Cart.findByIdAndDelete(cartId);
+
+      return res.status(201).json({
+        success: true,
+        message: "Order placed successfully with Cash on Delivery!",
+        orderId: newOrder._id,
+      });
+    }
+
+    // If PayPal, proceed with payment processing
     const create_payment_json = {
       intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
+      payer: { payment_method: "paypal" },
       redirect_urls: {
         return_url: "http://localhost:5173/shop/paypal-return",
         cancel_url: "http://localhost:5173/shop/paypal-cancel",
@@ -42,56 +90,32 @@ const createOrder = async (req, res) => {
               quantity: item.quantity,
             })),
           },
-
-          amount: {
-            currency: "USD",
-            total: totalAmount,
-          },
-          description: "description",
+          amount: { currency: "USD", total: totalAmount },
+          description: "Order Payment",
         },
       ],
     };
+
     paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
       if (error) {
-        console.log(error, "Ishn");
-        return res.status(500).json({
-          success: false,
-          message: "error while creatig paypal payment",
-        });
-      } else {
-        const newlyCreatedOrder = new Order({
-          userId,
-          cartId,
-          cartItems,
-          addressInfo,
-          orderStatus,
-          totalAmount,
-          orderDate,
-          orderUpdateDate,
-          paymentMethod,
-          paymentStatus,
-          paymentId,
-          payerId,
-        });
-        await newlyCreatedOrder.save();
-        const approvalURL = paymentInfo.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-        res.status(201).json({
-          success: true,
-          approvalURL: approvalURL,
-          orderId: newlyCreatedOrder._id,
-        });
+        console.log(error);
+        return res.status(500).json({ success: false, message: "PayPal payment creation failed" });
       }
+
+      const approvalURL = paymentInfo.links.find((link) => link.rel === "approval_url").href;
+
+      res.status(201).json({
+        success: true,
+        approvalURL: approvalURL,
+        orderId: newOrder._id,
+      });
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured",
-    });
+    res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
+
 const captureOrder = async (req, res) => {
   try {
     const { orderId, paymentId, payerId } = req.body;
@@ -146,6 +170,7 @@ const sendEmail = async (req, res) => {
   }
   const tempPath = path.join(__dirname, "../../helpers/Order.html");
   let orderHtml = fs.readFileSync(tempPath, "utf8");
+  const pdfBuffer=await generatePdf(order)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -161,6 +186,13 @@ const sendEmail = async (req, res) => {
     html: orderHtml
       .replaceAll("{{ORDER_NUMBER}}", order._id)
       .replaceAll("{{ORDER_TOTAL}}", order.totalAmount),
+      attachments: [
+        {
+          filename: `Invoice_${order._id}.pdf`,
+          content: pdfBuffer, // Attach PDF from memory
+          contentType: "application/pdf",
+        },
+      ],
   };
   transporter.sendMail(message, (error, info) => {
     if (error) {
@@ -233,6 +265,44 @@ const getOrderDetails = async (req, res) => {
     });
   }
 };
+const generatePdf=async(order)=>{
+  const user=await User.findById(order.userId)
+  if(!user){
+    return res.json({
+      success:false,
+      message:'User not found'
+    })
+  }
+  const browser=await puppeteer.launch({headless:'new'})
+ 
+  const page=await browser.newPage()
+  console.log(order.addressInfo[0].
+    address," ",order.addressInfo[0].city,' ',user.userName);
+  
+  const tempPath=path.join(__dirname,"../../helpers/Invoice.html")
+  let htmlContent= fs.readFileSync(tempPath,'utf8')
+  const orderItemsHtml=order.cartItems.map((item) => `
+  <tr>
+    <td>${item.title}</td>
+    <td>${item.quantity}</td>
+    <td>$${parseFloat(item.price).toFixed(2)}</td>
+    <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+  </tr>`
+).join('')
+htmlContent=htmlContent
+.replace('{{ORDER_ID}}',order._id)
+.replaceAll('{{ORDER_TOTAL}}',order.totalAmount.toFixed(2))
+.replace("{{ORDER_DATE}}", new Date(order.orderDate).toLocaleDateString())
+.replaceAll('{{NAME}}',user.userName)
+.replace('{{ADDRESS_AREA}}',order.addressInfo[0].address)
+.replace('{{ADDRESS_CITY}}',order.addressInfo[0].city)
+.replace('{{ADDRESS_PINCODE}}',order.addressInfo[0].pincode)
+.replace("{{ORDER_ITEMS}}", orderItemsHtml);
+await page.setContent(htmlContent)
+const pdfBuffer=await page.pdf({format:"A4",printBackground:true})
+await browser.close()
+return pdfBuffer
+}
 module.exports = {
   createOrder,
   captureOrder,

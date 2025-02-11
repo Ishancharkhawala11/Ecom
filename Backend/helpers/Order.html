@@ -48,6 +48,13 @@
         margin: 20px auto;
         width: fit-content;
       }
+      .pdf-notice {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #4caf50;
+      }
     </style>
   </head>
   <body>
@@ -61,6 +68,11 @@
         <p><strong>Total Amount:</strong> {{ORDER_TOTAL}}</p>
         <!-- <p><strong>Estimated Delivery:</strong> {{DELIVERY_DATE}}</p> -->
       </div>
+
+      <div class="pdf-notice">
+        <p>A PDF invoice is attached with this email for your records.</p>
+      </div>
+
       <div class="footer">
         <p>If you have any questions, contact our support team.</p>
         <p>&copy; 2025 Your Company. All rights reserved.</p>
