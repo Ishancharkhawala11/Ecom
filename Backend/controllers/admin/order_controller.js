@@ -74,5 +74,41 @@ const updateOrderStatus=async(req,res)=>{
   
   }
 }
+const changePaymentStatus=async(req,res)=>{
+  try {
+    const {orderId}=req.body
+    let order=await Order.findById(orderId);
+    console.log(order);
+    
+     if(! order){
+      return res.json({
+        success:false,
+        message:"Order is not found"
+      }) 
+     }
+     if(order.orderStatus==='delivered' && order.paymentMethod==='cod')
+      {
+        order .paymentStatus='paid'
+        return res.json({
+          success:true,
+          message:"Payment status is change to paid",
+          data:order
+        })
+      }
+      res.json({
+        success:false,
+        message:"Payment status is not change to paid",
+        // data:order
+      })
 
-module.exports={getAllOrderOfAllUser,getOrderDetailsForAdmin,updateOrderStatus}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
+     
+}
+
+module.exports={getAllOrderOfAllUser,getOrderDetailsForAdmin,updateOrderStatus,changePaymentStatus}

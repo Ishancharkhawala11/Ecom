@@ -5,7 +5,7 @@ import { Separator } from "../ui/separator";
 import CommonForm from "../common/Form";
 import { Badge } from "../ui/badge";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrderDetailsForAdmin, getAllOrdersForAdmin, updateOrderStatus } from "@/store/admin/order-slice";
+import { changeOrderStatus, getAllOrderDetailsForAdmin, getAllOrdersForAdmin, updateOrderStatus } from "@/store/admin/order-slice";
 import { useToast } from "@/hooks/use-toast";
 const initialFormData = {
   status: ""
@@ -24,6 +24,13 @@ const Admin_Order_details = ({orderDetails}) => {
       if(data.payload.success){
         dispatch(getAllOrderDetailsForAdmin(orderDetails._id))
         dispatch(getAllOrdersForAdmin())
+        if (orderDetails.paymentMethod === "cod") {
+          dispatch(changeOrderStatus(orderDetails._id)).then(data=>{
+            // if(data.payload.success){
+            //   dispatch(getAllOrderDetailsForAdmin(orderDetails._id))
+            // }
+          })
+        }
         setFormdata(initialFormData)
         toast({
           title:data.payload.message

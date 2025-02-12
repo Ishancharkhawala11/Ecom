@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Axis3D } from "lucide-react";
 // import { build } from "vite";
 const initialState={
     isLoading:false,
@@ -33,6 +34,10 @@ export const getAllOrdersForAdmin = createAsyncThunk(
       return response.data;
     }
   );
+  export const changeOrderStatus=createAsyncThunk('/Order/changOrderStatus',async(orderId)=>{
+    const response=await axios.put('http://localhost:5000/api/admin/orders/status',{orderId})
+    return response.data
+  })
   const adminOrderSlice = createSlice({
     name: 'adminOrderSlice',
     initialState,
@@ -66,6 +71,21 @@ export const getAllOrdersForAdmin = createAsyncThunk(
           
         })
         .addCase(getAllOrderDetailsForAdmin.rejected, (state) => {
+          state.isLoading = false;
+          state.orderDetails = null;
+        })
+        .addCase(changeOrderStatus.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(changeOrderStatus.fulfilled, (state, action) => {
+          state.isLoading = false;
+        
+          if (action.payload.success) {
+            state.orderDetails = action.payload.data; // Update state with new order data
+          }
+          
+        })
+        .addCase(changeOrderStatus.rejected, (state) => {
           state.isLoading = false;
           state.orderDetails = null;
         });

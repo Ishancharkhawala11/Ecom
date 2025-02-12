@@ -289,10 +289,40 @@ const pdfBuffer=await page.pdf({format:"A4",printBackground:true})
 await browser.close()
 return pdfBuffer
 }
+// const changePaymentStatus=async(req,res)=>{
+//   try {
+//     const {orderId}=req.body
+//     const order=await Order.findById(orderId);
+//      if(! order){
+//       return res.json({
+//         success:false,
+//         message:"Order is not found"
+//       }) 
+//      }
+//      if(order.orderStatus==='delivered' && order.paymentMethod==='cod')
+//       {
+//         order.paymentStatus='paid'
+//       }
+//       res.json({
+//         success:true,
+//         message:"Payment status is change to paid",
+//         data:order
+//       })
+
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Some error occured",
+//     });
+//   }
+     
+// }
 module.exports = {
   createOrder,
   captureOrder,
   getAllOrderByUser,
   getOrderDetails,
-  sendEmail
+  sendEmail,
+  // changePaymentStatus
 };

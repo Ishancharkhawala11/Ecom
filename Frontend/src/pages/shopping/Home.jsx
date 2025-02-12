@@ -51,6 +51,7 @@ const ShoppingHome = () => {
   const [openDetailDialog,setOpenDetailsDialoge]=useState(false)
   const {featureImageList}=useSelector(state=>state.commonFeature)
   const slides = featureImageList.map((img) => img.image);
+    const { cartItems } = useSelector((state) => state.shopCart);
   useEffect(() => {
     console.log(featureImageList,'images');
     
@@ -80,19 +81,63 @@ const ShoppingHome = () => {
   console.log(getcurrentProductId,"details")
   dispatch(fetcProductdetails(getcurrentProductId))
   }
-   const HandleAddToCart=(getcurrentProductId)=>{
-      console.log(getcurrentProductId,'cart');
-      dispatch(addToCart({userId:user.id, productId:getcurrentProductId, quantity:1})).then(data=>{
-        // console.log(data)
-        if(data.payload.success){
-          dispatch(fetchToCart(user.id))
-          toast({
-            title:"Product has been added in cart"
-          })
-        }
+  //  const HandleAddToCart=(getcurrentProductId)=>{
+  //     console.log(getcurrentProductId,'cart');
+  //     dispatch(addToCart({userId:user.id, productId:getcurrentProductId, quantity:1})).then(data=>{
+  //       // console.log(data)
+  //       if(data.payload.success){
+  //         dispatch(fetchToCart(user.id)).then((data)=>{
+  //           console.log(data,"HomeCart");
+            
+  //         })
+  //         // console.log();
+          
+  //         toast({
+  //           title:"Product has been added in cart"
+  //         })
+  //       }
         
-      })
-    }
+  //     })
+  //   }
+   const HandleAddToCart = (getcurrentProductId, getTotalStock) => {
+      // console.log(getcurrentProductId);
+      let getCartItems = cartItems.items || [];
+      if (getCartItems.length) {
+        const indexOfCurrentItem = getCartItems.findIndex(
+          (item) => item.productId === getcurrentProductId
+        );
+        // if(indexOfCurrentItem)
+        if (indexOfCurrentItem > -1) {
+          const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+          console.log(getQuantity,'getQuantity');
+          console.log(getTotalStock,'totalStock');
+          
+          
+          if (getQuantity + 1 > getTotalStock) {
+            toast({
+              title: `Only ${getQuantity} quantity can be added`,
+              variant: "destructive",
+            });
+            return
+          }
+        }
+      }
+      dispatch(
+        addToCart({
+          userId: user.id,
+          productId: getcurrentProductId,
+          quantity: 1,
+        })
+      ).then((data) => {
+        // console.log(data)
+        if (data.payload.success) {
+          dispatch(fetchToCart(user.id));
+          toast({
+            title: "Product has been added in cart",
+          });
+        }
+      });
+    };
   const handleNavigateToListingPage = (getCurrentItem, section) => {
     sessionStorage.removeItem("filters");
     const currentFiletrs = {

@@ -17,11 +17,23 @@ const Login = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState('');
+
+const handlePasswordChange = (e) => {
+  const password = e.target.value;
+  setFormData({ ...formData, password });
+
+  if (password.length < 6) {
+    setPasswordError("Password must be at least 6 characters long.");
+  } else {
+    setPasswordError("");
+  }
+};
 
   const handleEmailChange = (e) => {
     const email = e.target.value;
     setFormData({ ...formData, email });
-
+   
     // Validate email format
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailRegex.test(email)) {
@@ -55,8 +67,8 @@ const Login = () => {
   const isFormValid = () => {
     const emailReg= /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const valid=emailReg.test(formData.email)
-
-    return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && valid;
+    const validPassword = formData.password.length >= 6;
+    return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && (valid && validPassword) ;
   };
 
   return (
@@ -83,8 +95,9 @@ const Login = () => {
         onSubmit={onSubmit}
         isBtnDisabled={!isFormValid()}
         forgotPassword={true}
-        error={{ emailError }}
-        handleEmailChange={handleEmailChange} // Pass the handleEmailChange as prop
+        error={{ emailError ,passwordError}}
+        handleEmailChange={handleEmailChange}
+        handlePasswordChange={handlePasswordChange} // Pass the handleEmailChange as prop
       />
     </div>
   );

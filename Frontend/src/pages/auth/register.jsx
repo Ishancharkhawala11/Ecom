@@ -15,14 +15,26 @@ const Register = () => {
   const [formData,setFormdata]=useState(intialState)
 const disPatch=useDispatch()
  const [emailError, setEmailError] = useState('');
+ const [passwordError, setPasswordError] = useState('');
+ 
 const navigate=useNavigate()
 const {toast}=useToast()
 const isFormValid=()=>{
   const emailReg= /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   const valid=emailReg.test(formData.email)
 
-  return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && valid;
+  return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && (valid && validPassword);
 }
+const handlePasswordChange = (e) => {
+  const password = e.target.value;
+  setFormdata({ ...formData, password });
+
+  if (password.length < 6) {
+    setPasswordError("Password must be at least 6 characters long.");
+  } else {
+    setPasswordError("");
+  }
+};
 const handleEmailChange = (e) => {
   const email = e.target.value;
   setFormdata({ ...formData, email });
@@ -78,7 +90,8 @@ const onSubmit = async (e) => {
       onSubmit={onSubmit}
       isBtnDisabled={! isFormValid()}
       handleEmailChange={handleEmailChange}
-      error={{emailError}}
+      handlePasswordChange={handlePasswordChange}
+      error={{emailError,passwordError}}
       ></CommonForm>
     </div>
   )

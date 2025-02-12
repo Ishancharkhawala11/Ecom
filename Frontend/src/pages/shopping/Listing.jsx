@@ -85,6 +85,10 @@ const ShoppingListing = () => {
       // if(indexOfCurrentItem)
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        console.log(getQuantity,'getQuantity');
+        console.log(getTotalStock,'totalStock');
+        
+        
         if (getQuantity + 1 > getTotalStock) {
           toast({
             title: `Only ${getQuantity} quantity can be added`,

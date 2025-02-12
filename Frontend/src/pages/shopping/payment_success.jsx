@@ -35,6 +35,10 @@ const PaymentSuccess = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
+        <div className="flex items-center justify-center gap-2 text-black mb-2">
+              
+              <span>Do not close page or click on button untill mail send </span>
+            </div>
           {loading && mailSending ? ( // Show loader while email is being sent
             <div className="flex items-center justify-center gap-2 text-gray-400">
               <Loader2 className="w-5 h-5 animate-spin" />

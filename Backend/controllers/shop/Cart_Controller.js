@@ -55,7 +55,7 @@ const fetchCartItems = async (req, res) => {
     }
     const cart=await Cart.findOne({userId}).populate({
         path:'items.productId',
-        select:'image title price salePrice'
+        select:'image title price salePrice totalStock'
     })
     if(!cart){
         return res.status(404).json({
@@ -74,6 +74,7 @@ const fetchCartItems = async (req, res) => {
       title:item.productId.title,
       price:item.productId.price,
       salePrice:item.productId.salePrice,
+      // totalStock:item.productId.totalStock,
       quantity:item.quantity,
     }))
     res.status(200).json({
