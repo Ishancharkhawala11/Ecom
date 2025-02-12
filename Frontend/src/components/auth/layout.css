@@ -1,0 +1,158 @@
+/* Pure Black Background */
+.pure-black-bg {
+  background: #000000;
+}
+
+/* Darker Glass Effect with Intense Neon Glow */
+.deep-dark-glass {
+  background: rgba(255, 255, 255, 0.08); /* Darker for contrast */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative; /* For pseudo-element effects */
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 0 0 40px rgba(0, 255, 255, 0.5);
+  animation: neonFlash 1.5s infinite alternate ease-in-out;
+}
+
+/* Stronger Glow Animation */
+@keyframes neonFlash {
+  0% {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 50px rgba(0, 255, 255, 0.8);
+  }
+}
+
+/* Neon Aura Effect - Pseudo Elements */
+.deep-dark-glass::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.4) 0%, rgba(0, 255, 255, 0) 70%);
+  filter: blur(15px);
+  z-index: -1;
+  animation: auraGlow 2s infinite alternate;
+}
+
+/* Shimmering Aura Animation */
+@keyframes auraGlow {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Glow Explosion on Hover */
+.deep-dark-glass:hover {
+  box-shadow: 0 0 50px rgba(0, 255, 255, 1), 0 0 80px rgba(0, 255, 255, 0.9);
+  transition: box-shadow 0.3s ease-in-out;
+  animation: glowBurst 0.6s ease-in-out;
+}
+
+/* Burst Effect when Hovered */
+@keyframes glowBurst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Softer White Text for Better Readability */
+.text-soft-white {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Subtle Shadow for Depth */
+.deep-shadow {
+  text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Hover Lift Effect */
+.deep-hover-lift:hover {
+  transform: translateY(-5px);
+  transition: transform 0.25s ease-out;
+}
+
+/* Subtle Button Glow */
+.btn-deep-hover-effect:hover {
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+@keyframes flipIn {
+  from {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+.flip-in {
+  animation: flipIn 0.9s ease-in-out forwards;
+}
+/* Unique Animation for Forgot Password */
+@keyframes fadePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  60% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply it to Forgot Password */
+.fade-pop {
+  animation: fadePop 0.8s ease-out forwards;
+}
+@keyframes electricGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.electric-bg {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 10%, rgba(0, 255, 255, 0.5) 40%, rgba(255, 255, 255, 0.1) 70%);
+  background-size: 200% 200%;
+  animation: electricGlow 3s infinite linear;
+}

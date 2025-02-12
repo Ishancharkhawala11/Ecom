@@ -7,97 +7,58 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const initialState = {
-    email: "",
-    password: "",
-  };
-
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const dispatch = useDispatch();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [passwordError, setPasswordError] = useState('');
 
-const handlePasswordChange = (e) => {
-  const password = e.target.value;
-  setFormData({ ...formData, password });
-
-  if (password.length < 6) {
-    setPasswordError("Password must be at least 6 characters long.");
-  } else {
-    setPasswordError("");
-  }
-};
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setFormData({ ...formData, password });
+    setPasswordError(password.length < 6 ? "Password must be at least 6 characters." : "");
+  };
 
   const handleEmailChange = (e) => {
     const email = e.target.value;
     setFormData({ ...formData, email });
-   
-    // Validate email format
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address.");
-      return; // Show error message if invalid
-    } else {
-      setEmailError(""); // Clear error if email is valid
-    }
+    setEmailError(!emailRegex.test(email) ? "Enter a valid email." : "");
   };
 
-  // console.log();
-  
   const onSubmit = (e) => {
     e.preventDefault();
-    // Dispatch login action here
     dispatch(loginUser(formData)).then((data) => {
-      if (data.payload.success) {
-        toast({
-          title: data.payload.message,
-        });
-        navigate("/shop/home");
-      } else {
-        toast({
-          title: data.payload.message,
-          variant: "destructive",
-        });
-      }
+      toast({ title: data.payload.message, variant: data.payload.success ? "" : "destructive" });
+      if (data.payload.success) navigate("/shop/home");
     });
   };
 
   const isFormValid = () => {
-    const emailReg= /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const valid=emailReg.test(formData.email)
-    const validPassword = formData.password.length >= 6;
-    return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && (valid && validPassword) ;
+    return formData.email && formData.password.length >= 6 && !emailError && !passwordError;
   };
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
+    <div className="mx-auto w-full max-w-md bg-white p-8 rounded-lg shadow-lg space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Sign in to your account
-        </h1>
-        <p className="mt-2">
-          Don't have an account?{" "}
-          <Link
-            className="font-medium ml-2 text-primary hover:underline"
-            to="/auth/register"
-          >
-            register
-          </Link>
+        <h1 className="text-3xl font-bold">Sign in to your account</h1>
+        <p className="mt-2 text-gray-600">
+          Don't have an account?
+          <Link className="ml-2 text-blue-600 hover:underline" to="/auth/register">Register</Link>
         </p>
       </div>
       <CommonForm
         formControlers={LoginFormControl}
-        buttonText={"Sign Up"}
+        buttonText="Sign In"
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
         isBtnDisabled={!isFormValid()}
         forgotPassword={true}
-        error={{ emailError ,passwordError}}
+        error={{ emailError, passwordError }}
         handleEmailChange={handleEmailChange}
-        handlePasswordChange={handlePasswordChange} // Pass the handleEmailChange as prop
+        handlePasswordChange={handlePasswordChange}
       />
     </div>
   );

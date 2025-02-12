@@ -1,100 +1,83 @@
-import CommonForm from '@/components/common/Form'
-import { registerFormControl } from '@/components/config'
-import { useToast } from '@/hooks/use-toast'
-import { registerUser } from '@/store/auth-slice'
-// import { Item } from '@radix-ui/react-dropdown-menu'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-const intialState ={
-  userName:"",
-  email:"",
-  password:""
-}
+import CommonForm from "@/components/common/Form";
+import { registerFormControl } from "@/components/config";
+import { useToast } from "@/hooks/use-toast";
+import { registerUser } from "@/store/auth-slice";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+
+const initialState = {
+  userName: "",
+  email: "",
+  password: "",
+};
+
 const Register = () => {
-  const [formData,setFormdata]=useState(intialState)
-const disPatch=useDispatch()
- const [emailError, setEmailError] = useState('');
- const [passwordError, setPasswordError] = useState('');
- 
-const navigate=useNavigate()
-const {toast}=useToast()
-const isFormValid=()=>{
-  const emailReg= /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  const valid=emailReg.test(formData.email)
+  const [formData, setFormData] = useState(initialState);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  return Object.keys(formData).map((key) => formData[key] !== '').every((item) => item) && (valid && validPassword);
-}
-const handlePasswordChange = (e) => {
-  const password = e.target.value;
-  setFormdata({ ...formData, password });
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setFormData({ ...formData, password });
+    setPasswordError(password.length < 6 ? "Password must be at least 6 characters." : "");
+  };
 
-  if (password.length < 6) {
-    setPasswordError("Password must be at least 6 characters long.");
-  } else {
-    setPasswordError("");
-  }
-};
-const handleEmailChange = (e) => {
-  const email = e.target.value;
-  setFormdata({ ...formData, email });
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    setFormData({ ...formData, email });
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    setEmailError(!emailRegex.test(email) ? "Enter a valid email." : "");
+  };
 
-  // Validate email format
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  if (!emailRegex.test(email)) {
-    setEmailError("Please enter a valid email address.");
-    return; // Show error message if invalid
-  } else {
-    setEmailError(""); // Clear error if email is valid
-  }
-};
-const onSubmit = async (e) => {
-  e.preventDefault();
-  disPatch(registerUser(formData))
-    .then((result) => {
-      if(result.payload.success===true){
-        toast({
-          title:result.payload.message,
-        })
-        navigate("/auth/login");
-      }
-      else{
-        toast({
-          title:result.payload.message,
-          variant:"destructive"
-        })
-        // navigate("/auth/login");
-      }
-    console.log(result)
-    
-    })
-    .catch((error) => {
-      console.error("Registration failed:", error.message);
+  const isFormValid = () => {
+    return (
+      formData.userName &&
+      formData.email &&
+      formData.password.length >= 6 &&
+      !emailError &&
+      !passwordError
+    );
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(registerUser(formData)).then((result) => {
+      toast({
+        title: result.payload.message,
+        variant: result.payload.success ? "" : "destructive",
+      });
+      if (result.payload.success) navigate("/auth/login");
     });
-};
+  };
 
   return (
-    <div className='mx-auto w-full max-w-md space-y-6'>
-      <div className='text-center'>
-        <h1 className='text-3xl font-bold tracking-tight text-foreground'>
-          Create new account
-        </h1>
-        <p className='mt-2'>Already have an Account <Link className='font-medium ml-2 text-primary hover:underline' to="/auth/login">Login</Link></p>
-         
+    <div className="mx-auto w-full max-w-md bg-white p-8 rounded-lg shadow-lg space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Create a new account</h1>
+        <p className="mt-2 text-gray-600">
+          Already have an account?
+          <Link className="ml-2 text-blue-600 hover:underline" to="/auth/login">
+            Login
+          </Link>
+        </p>
       </div>
       <CommonForm
-      formControlers={registerFormControl}
-      buttonText={'Sign Up'}
-      formData={formData}
-      setFormData={setFormdata}
-      onSubmit={onSubmit}
-      isBtnDisabled={! isFormValid()}
-      handleEmailChange={handleEmailChange}
-      handlePasswordChange={handlePasswordChange}
-      error={{emailError,passwordError}}
-      ></CommonForm>
+        formControlers={registerFormControl}
+        buttonText="Sign Up"
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={onSubmit}
+        isBtnDisabled={!isFormValid()}
+        handleEmailChange={handleEmailChange}
+        handlePasswordChange={handlePasswordChange}
+        error={{ emailError, passwordError }}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

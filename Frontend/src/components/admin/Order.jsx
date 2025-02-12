@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllOrderDetailsForAdmin, getAllOrdersForAdmin, resetOrderDetails } from '@/store/admin/order-slice'
 import { Badge } from '../ui/badge'
 import Admin_Order_details from './Order_details'
+import Product_Not_Found from '../shopping/Product_Not_Found'
 
 
 const AdminOrder = () => {
@@ -31,12 +32,13 @@ useEffect(()=>{
   }
   
   return (
-    <Card>
+    <Card >
       <CardHeader>
         <CardTitle>All Orders</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
+      <div className='h-[500px] overflow-y-auto '>
+        <Table >
           <TableHeader>
             <TableRow>
               <TableHead>Order ID</TableHead>
@@ -61,7 +63,7 @@ useEffect(()=>{
                             ? "bg-green-500"
                             : orderItem?.orderStatus === "rejected"
                             ? "bg-red-600"
-                            : "bg-black"
+                            : orderItem?.orderStatus==='delivered'?'bg-blue-500':"bg-black"
                         }`}
                       >
                         {orderItem?.orderStatus}
@@ -88,10 +90,17 @@ useEffect(()=>{
                     </TableCell>
                   </TableRow>
                 ))
-              : null}
+
+              : (<TableRow>
+                <TableCell colSpan="5" className="text-center">
+                  <Product_Not_Found Item={'Order'}></Product_Not_Found>
+                </TableCell>
+              </TableRow>)}
           </TableBody>
         </Table>
+        </div>
       </CardContent>
+      
     </Card>
   );
 }

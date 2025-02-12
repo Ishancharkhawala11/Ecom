@@ -7,6 +7,7 @@ import { Badge } from "../ui/badge";
 import { useDispatch, useSelector } from "react-redux";
 import { changeOrderStatus, getAllOrderDetailsForAdmin, getAllOrdersForAdmin, updateOrderStatus } from "@/store/admin/order-slice";
 import { useToast } from "@/hooks/use-toast";
+import Product_Not_Found from "../shopping/Product_Not_Found";
 const initialFormData = {
   status: ""
 };
@@ -74,7 +75,7 @@ const Admin_Order_details = ({orderDetails}) => {
                   ? "bg-green-500"
                   : orderDetails?.orderStatus === "rejected"
                   ? "bg-red-600"
-                  : "bg-black"
+                  :orderDetails?.orderStatus==='delivered'?'bg-blue-500': "bg-black"
               }`}
             >
               {orderDetails?.orderStatus}
@@ -95,7 +96,10 @@ const Admin_Order_details = ({orderDetails}) => {
                     <span>Price: ${item.price}</span>
                   </li>
                 ))
-              : null}
+              :
+                  null
+                
+              }
           </ul>
         </div>
       </div>

@@ -111,7 +111,7 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
             <h1 className="text-3xl font-extrabold">
               {product_Details?.title}
             </h1>
-            <p className="text-muted-foreground lg:text-2xl  text-xl mb-5 mt-3">
+            <p className="text-muted-foreground lg:text-1xl  text-xl mb-5 mt-3">
               {product_Details?.description}
             </p>
           </div>

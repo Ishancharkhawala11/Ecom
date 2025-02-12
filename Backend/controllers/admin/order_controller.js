@@ -4,7 +4,7 @@ const getAllOrderOfAllUser = async (req, res) => {
     // const {userId}=req.params
     const orders=await Order.find({})
     if(! orders.length){
-      res.status(404).json({
+     return res.json({
         success:false,
         message:"No orders found"
       })
@@ -89,6 +89,7 @@ const changePaymentStatus=async(req,res)=>{
      if(order.orderStatus==='delivered' && order.paymentMethod==='cod')
       {
         order .paymentStatus='paid'
+        await order.save()
         return res.json({
           success:true,
           message:"Payment status is change to paid",

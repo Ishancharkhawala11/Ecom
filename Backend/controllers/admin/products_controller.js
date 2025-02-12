@@ -18,6 +18,7 @@ const handleImageUpload = async (req, res) => {
     });
   }
 };
+
 const addProduct = async (req, res) => {
   try {
     const {
