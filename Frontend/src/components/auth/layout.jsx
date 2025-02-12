@@ -9,9 +9,9 @@ const Layout = () => {
   const isOtpPage = location.pathname === "/auth/otp";
 
   return (
-    <div className="flex min-h-screen w-full relative font-sans bg-gray-100 text-gray-900">
+    <div className="flex min-h-screen w-full relative font-sans bg-black text-gray-900">
       {/* Left Side - Fixed Glass Readability */}
-      <div className=" hidden lg:flex items-center justify-center w-1/2 px-16 relative overflow-hidden z-10 pure-black-bg">
+      <div className=" hidden lg:flex items-center justify-center w-3/5 px-16 relative overflow-hidden z-10 pure-black-bg">
         <div className={`deep-dark-glass text-center text-soft-white leading-relaxed shadow-lg rounded-lg p-10 
           ${isLoginPage ? "slide-in" : isForgotPage ? "fade-pop" : isOtpPage ? "fade-pop" : "flip-in"}`}>
           
@@ -51,7 +51,7 @@ const Layout = () => {
       </div>
 
       {/* Right Side - Stays White */}
-      <div className="flex flex-1 items-center justify-center bg-white px-8 py-16 sm:px-10 lg:px-12 z-10 shadow-md rounded-lg">
+      <div className="flex flex-1 items-center justify-center bg-white px-8 py-16 sm:px-10 lg:px-12 z-10 shadow-md rounded-l-3xl">
         <Outlet />
       </div>
     </div>
