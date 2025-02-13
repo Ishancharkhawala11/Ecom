@@ -7,53 +7,56 @@ const Layout = () => {
   const isLoginPage = location.pathname === "/auth/login";
   const isForgotPage = location.pathname === "/auth/forgot";
   const isOtpPage = location.pathname === "/auth/otp";
+  const isResetPasswordPage = location.pathname === "/auth/reset-password"; // New condition
 
   return (
-    <div className="flex min-h-screen w-full relative font-sans bg-black text-gray-900">
-      {/* Left Side - Fixed Glass Readability */}
-      <div className=" hidden lg:flex items-center justify-center w-3/5 px-16 relative overflow-hidden z-10 pure-black-bg">
-        <div className={`deep-dark-glass text-center text-soft-white leading-relaxed shadow-lg rounded-lg p-10 
-          ${isLoginPage ? "slide-in" : isForgotPage ? "fade-pop" : isOtpPage ? "fade-pop" : "flip-in"}`}>
-          
+    <div className="flex min-h-screen w-full relative font-sans bg-[#F7F7F7] text-[#000000]">
+  
+      {/* Left Section with Floating Animation */}
+      <div className="hidden lg:flex items-center justify-center w-1/3 px-12 relative overflow-hidden z-10 left-section">
+
+        <ul className="circles">
+          {[...Array(10)].map((_, i) => (
+            <li key={i}></li>
+          ))}
+        </ul>
+
+        {/* Floating Text */}
+        <div className="text-container">
           {isLoginPage ? (
             <>
-              <h1 className="text-5xl font-extrabold tracking-wider">Welcome Back!</h1>
-              <p className="mt-5 text-2xl animate-fadeIn delay-200 deep-shadow opacity-95">
-                Sign in to continue your shopping journey.
-              </p>
+              <h1>Welcome Back!</h1>
+              <p>Sign in to continue your shopping journey.</p>
             </>
           ) : isForgotPage ? (
             <>
-              <h1 className="text-5xl font-extrabold tracking-wider text-green-400">Forgot Your Password?</h1>
-              <p className="mt-5 text-2xl opacity-95 animate-fadeIn delay-300 deep-shadow">
-                Don't worry! Reset your password and get back in safely.
-              </p>
+              <h1>Forgot Your Password?</h1>
+              <p>Don't worry! Reset your password and get back in safely.</p>
             </>
           ) : isOtpPage ? (
             <>
-              <h1 className="text-5xl font-extrabold tracking-wider text-green-400">Verify Your OTP</h1>
-              <p className="mt-5 text-2xl opacity-95 animate-fadeIn delay-300 deep-shadow">
-                Enter the OTP sent to your email or phone to continue.
-              </p>
+              <h1>Verify Your OTP</h1>
+              <p>Enter the OTP sent to your email or phone to continue.</p>
+            </>
+          ) : isResetPasswordPage ? ( // New block for Reset Password Page
+            <>
+              <h1>Reset Your Password</h1>
+              <p>Enter your new password below and confirm it to secure your account.</p>
             </>
           ) : (
             <>
-            <h1 className="text-5xl font-extrabold tracking-wider">
-  Welcome to <span className="text-cyan-400 whitespace-nowrap">E-Commerce Shopping</span>
-</h1>
-
-              <p className="mt-5 text-2xl opacity-95 animate-fadeIn delay-300 deep-shadow">
-                Explore thousands of products with exclusive deals.
-              </p>
+              <h1>Welcome to E-Commerce Shopping</h1>
+              <p>Explore thousands of products with exclusive deals.</p>
             </>
           )}
         </div>
       </div>
 
-      {/* Right Side - Stays White */}
-      <div className="flex flex-1 items-center justify-center bg-white px-8 py-16 sm:px-10 lg:px-12 z-10 shadow-md rounded-l-3xl">
+      {/* Right Section - Form Area */}
+      <div className="flex w-2/3 items-center justify-center bg-[#F7F7F7] px-12 py-16 sm:px-16 lg:px-20 z-10 shadow-md frosted-glass">
         <Outlet />
       </div>
+
     </div>
   );
 };

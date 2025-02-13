@@ -49,7 +49,7 @@ navigate('/auth/login')
   };
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
+    <div className="mx-auto w-full max-w-md space-y-6  bg-white p-8 rounded-lg shadow-lg">
       <div className="text-center">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Reset Your Password

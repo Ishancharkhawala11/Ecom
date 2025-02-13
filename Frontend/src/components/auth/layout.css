@@ -1,158 +1,197 @@
-/* Pure Black Background */
-.pure-black-bg {
-  background: #000000;
+@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Darker Glass Effect with Intense Neon Glow */
-.deep-dark-glass {
-  background: rgba(255, 255, 255, 0.08); /* Darker for contrast */
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 24px;
-  position: relative; /* For pseudo-element effects */
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7), 0 0 40px rgba(0, 255, 255, 0.5);
-  animation: neonFlash 1.5s infinite alternate ease-in-out;
+body {
+    font-family: 'Exo', sans-serif;
 }
 
-/* Stronger Glow Animation */
-@keyframes neonFlash {
+/* Left Section - Animated Background */
+.left-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: #000; /* Black background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.text-container {
+    text-align: center;
+    z-index: 10;
+}
+
+.text-container h1 {
+    font-size: 50px;
+    font-weight: 700;
+    
+    color: white; /* Change from #FFB22C */
+    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.6); /* Soft glow */
+
+}
+
+.text-container p {
+    font-size: 20px;
+    color: cyan;
+    opacity: 0.9;
+}
+
+/* Animated Floating Circles */
+.circles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.circles li {
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(143, 148, 251, 0.2); /* Using #8f94fb from the palette */
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+    border-radius: 50%;
+}
+
+/* Different circle sizes and speeds */
+.circles li:nth-child(1) {
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+    background: rgba(78, 84, 200, 0.3); /* #4e54c8 */
+}
+
+.circles li:nth-child(2) {
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.circles li:nth-child(3) {
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4) {
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+    background: rgba(143, 148, 251, 0.3);
+}
+
+.circles li:nth-child(5) {
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(6) {
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+}
+
+.circles li:nth-child(7) {
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+    background: rgba(78, 84, 200, 0.3);
+}
+
+.circles li:nth-child(8) {
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.circles li:nth-child(9) {
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+}
+
+.circles li:nth-child(10) {
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+/* Animation */
+@keyframes animate {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+    100% {
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+}
+
+@keyframes glowing {
   0% {
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.4);
-  }
-  100% {
-    box-shadow: 0 0 30px rgba(0, 255, 255, 1), 0 0 50px rgba(0, 255, 255, 0.8);
-  }
-}
-
-/* Neon Aura Effect - Pseudo Elements */
-.deep-dark-glass::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  background: radial-gradient(circle, rgba(0, 255, 255, 0.4) 0%, rgba(0, 255, 255, 0) 70%);
-  filter: blur(15px);
-  z-index: -1;
-  animation: auraGlow 2s infinite alternate;
-}
-
-/* Shimmering Aura Animation */
-@keyframes auraGlow {
-  0% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
-/* Glow Explosion on Hover */
-.deep-dark-glass:hover {
-  box-shadow: 0 0 50px rgba(0, 255, 255, 1), 0 0 80px rgba(0, 255, 255, 0.9);
-  transition: box-shadow 0.3s ease-in-out;
-  animation: glowBurst 0.6s ease-in-out;
-}
-
-/* Burst Effect when Hovered */
-@keyframes glowBurst {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+    text-shadow: 0 0 5px #ffb22c, 0 0 10px #ffb22c, 0 0 15px #ffb22c;
   }
   50% {
-    transform: scale(1.05);
-    opacity: 0.9;
+    text-shadow: 0 0 10px #ffcc66, 0 0 20px #ffcc66, 0 0 30px #ffcc66;
   }
   100% {
-    transform: scale(1);
-    opacity: 1;
+    text-shadow: 0 0 5px #ffb22c, 0 0 10px #ffb22c, 0 0 15px #ffb22c;
   }
 }
 
-/* Softer White Text for Better Readability */
-.text-soft-white {
-  color: rgba(255, 255, 255, 0.95);
-}
-
-/* Subtle Shadow for Depth */
-.deep-shadow {
-  text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.8);
-}
-
-/* Hover Lift Effect */
-.deep-hover-lift:hover {
-  transform: translateY(-5px);
-  transition: transform 0.25s ease-out;
-}
-
-/* Subtle Button Glow */
-.btn-deep-hover-effect:hover {
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.slide-in {
-  animation: slideIn 0.5s ease-out forwards;
-}
-
-@keyframes flipIn {
-  from {
-    transform: rotateX(-90deg);
-    opacity: 0;
-  }
-  to {
-    transform: rotateX(0deg);
-    opacity: 1;
-  }
-}
-
-.flip-in {
-  animation: flipIn 0.9s ease-in-out forwards;
-}
-/* Unique Animation for Forgot Password */
-@keyframes fadePop {
+@keyframes fadeInUp {
   0% {
     opacity: 0;
-    transform: scale(0.8);
-  }
-  60% {
-    opacity: 0.7;
-    transform: scale(1.05);
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-/* Apply it to Forgot Password */
-.fade-pop {
-  animation: fadePop 0.8s ease-out forwards;
-}
-@keyframes electricGlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.text-glow {
+  animation: glowing 2s infinite alternate ease-in-out;
 }
 
-.electric-bg {
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 10%, rgba(0, 255, 255, 0.5) 40%, rgba(255, 255, 255, 0.1) 70%);
-  background-size: 200% 200%;
-  animation: electricGlow 3s infinite linear;
+.fade-in {
+  animation: fadeInUp 1.5s ease-out;
 }
+/*/.frosted-glass {
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+}*/
