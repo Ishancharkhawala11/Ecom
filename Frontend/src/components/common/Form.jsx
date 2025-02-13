@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-
 import {
   Select,
   SelectContent,
@@ -13,7 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FiLoader } from "react-icons/fi";
 
@@ -26,104 +25,71 @@ const CommonForm = ({
   isBtnDisabled,
   forgotPassword = false,
   error = {},
-  handleEmailChange, // Add handleEmailChange prop
+  handleEmailChange,
   handlePasswordChange,
 }) => {
   const [showPassword, setShowPassword] = useState({});
   const { isLoading } = useSelector((state) => state.auth);
-  // const location=useLocation()
-  // console.log(error,'email');
-  // console.log("Received props in CommonForm:", { handleEmailChange });
 
   const togglePasswordVisibility = (name) => {
     setShowPassword((prev) => ({ ...prev, [name]: !prev[name] }));
   };
-  const renderInputsByComponantType = (getControlItem) => {
-    let element = null;
-    const value = formData[getControlItem.name] || "";
 
-    switch (getControlItem.componantType) {
+  const renderInputField = (controlItem) => {
+    const value = formData[controlItem.name] || "";
+
+    switch (controlItem.componantType) {
       case "input":
-        element = (
+        return (
           <div className="relative">
             <Input
-              name={getControlItem.name}
-              placeholder={getControlItem.placeholder}
-              id={getControlItem.name}
+              name={controlItem.name}
+              placeholder={controlItem.placeholder}
+              id={controlItem.name}
               type={
-                (getControlItem.name === "password" ||
-                  getControlItem.name === "confirmPassword") &&
-                showPassword[getControlItem.name]
+                ["password", "confirmPassword"].includes(controlItem.name) &&
+                showPassword[controlItem.name]
                   ? "text"
-                  : getControlItem.type || "text"
+                  : controlItem.type || "text"
               }
-              {...(getControlItem.type === "number" ? { min: 0 } : {})}
               value={value}
+              {...(controlItem.type === "number" ? { min: 0 } : {})}
               onChange={(e) => {
-                const newval = e.target.value;
-                console.log(getControlItem.name);
-                // console.log(error)
-                if (
-                  getControlItem.name === "email" ||
-                  getControlItem.name === "otp"
-                ) {
+                if (["email", "otp"].includes(controlItem.name)) {
                   handleEmailChange(e);
-                } else if (getControlItem.name === "password") {
+                } else if (controlItem.name === "password") {
                   handlePasswordChange(e);
                 }
-                setFormData((prevData) => ({
-                  ...prevData,
-                  [getControlItem.name]: newval,
-                }));
+                setFormData((prev) => ({ ...prev, [controlItem.name]: e.target.value }));
               }}
             />
-            {getControlItem.name === "password" && (
+            {["password", "confirmPassword"].includes(controlItem.name) && (
               <button
                 type="button"
                 className="absolute inset-y-0 right-3 flex items-center"
-                onClick={() => togglePasswordVisibility(getControlItem.name)}
+                onClick={() => togglePasswordVisibility(controlItem.name)}
               >
-                {showPassword[getControlItem.name] ? (
-                  <Eye size={20} />
-                ) : (
-                  <EyeOff size={20} />
-                )}
-              </button>
-            )}
-            {getControlItem.name === "confirmPassword" && (
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center"
-                onClick={() => togglePasswordVisibility(getControlItem.name)}
-              >
-                {showPassword[getControlItem.name] ? (
-                  <Eye size={20} />
-                ) : (
-                  <EyeOff size={20} />
-                )}
+                {showPassword[controlItem.name] ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
             )}
           </div>
         );
-        break;
-
       case "checkbox":
-        element = (
+        return (
           <div className="grid grid-cols-2 gap-2">
-            {getControlItem.options?.map((option) => (
+            {controlItem.options?.map((option) => (
               <div key={option.id} className="flex items-center">
                 <Checkbox
                   id={option.id}
-                  name={getControlItem.name}
+                  name={controlItem.name}
                   value={option.id}
                   checked={value.includes(option.id)}
                   onCheckedChange={(checked) => {
-                    const newSizes = checked
-                      ? [...value, option.id]
-                      : value.filter((size) => size !== option.id);
                     setFormData({
                       ...formData,
-                      [getControlItem.name]: newSizes,
+                      [controlItem.name]: checked
+                        ? [...value, option.id]
+                        : value.filter((size) => size !== option.id),
                     });
                   }}
                 />
@@ -134,103 +100,69 @@ const CommonForm = ({
             ))}
           </div>
         );
-        break;
       case "select":
-        element = (
+        return (
           <Select
-            onValueChange={(value) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: value,
-              })
-            }
+            onValueChange={(val) => setFormData({ ...formData, [controlItem.name]: val })}
             value={value}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={getControlItem.label} />
+              <SelectValue placeholder={controlItem.label} />
             </SelectTrigger>
             <SelectContent>
-              {getControlItem.options && getControlItem.options.length > 0
-                ? getControlItem.options.map((optionsItem) => (
-                    <SelectItem key={optionsItem.id} value={optionsItem.id}>
-                      {optionsItem.label}
-                    </SelectItem>
-                  ))
-                : null}
+              {controlItem.options?.map((opt) => (
+                <SelectItem key={opt.id} value={opt.id}>
+                  {opt.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         );
-        break;
       case "textarea":
-        element = (
+        return (
           <Textarea
-            name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
-            id={getControlItem.id}
+            name={controlItem.name}
+            placeholder={controlItem.placeholder}
+            id={controlItem.id}
             value={value}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: e.target.value,
-              })
-            }
+            onChange={(e) => setFormData({ ...formData, [controlItem.name]: e.target.value })}
           />
         );
-        break;
       default:
-        element = (
+        return (
           <Input
-            name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
-            id={getControlItem.name}
-            type={getControlItem.type}
+            name={controlItem.name}
+            placeholder={controlItem.placeholder}
+            id={controlItem.name}
+            type={controlItem.type}
             value={value}
-            {...(getControlItem.type === "number" ? { min: 0 } : {})}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [getControlItem.name]: e.target.value,
-              })
-            }
+            onChange={(e) => setFormData({ ...formData, [controlItem.name]: e.target.value })}
           />
         );
-        break;
     }
-    return element;
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3">
-        {formControlers.map((controlItem) => (
-          <div className="grid w-full gap-1.5" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
-            {renderInputsByComponantType(controlItem)}
-            {controlItem.name === "email" && error.emailError && (
-              <p className="text-red-500 text-sm">{error.emailError}</p>
-            )}
-            {controlItem.name === "otp" && error.otpError && (
-              <p className="text-red-500 text-sm">{error.otpError}</p>
-            )}
-            {controlItem.name === "password" && error.passwordError && (
-              <p className="text-red-500 text-sm">{error.passwordError}</p>
-            )}
-          </div>
-        ))}
-      </div>
-      {forgotPassword ? (
-        <div className="flex justify-end mt-5 mb-5">
+    <form onSubmit={onSubmit} className="space-y-4">
+      {formControlers.map((controlItem) => (
+        <div key={controlItem.name} className="grid gap-2">
+          <Label className="mb-1">{controlItem.label}</Label>
+          {renderInputField(controlItem)}
+          {error[`${controlItem.name}Error`] && formData[controlItem.name]?.trim() && (
+            <p className="text-red-500 text-sm">{error[`${controlItem.name}Error`]}</p>
+          )}
+        </div>
+      ))}
+
+      {forgotPassword && (
+        <div className="flex justify-end mt-5">
           <Link to="/auth/forgot" className="font-medium hover:text-gray-400">
-            forgot password ?
+            Forgot password?
           </Link>
         </div>
-      ) : null}
+      )}
 
-      <Button
-        disabled={isBtnDisabled}
-        type="submit"
-        className={`mt-2 w-full flex items-center justify-center space-x-2 cursor-pointer`}
-      >
+      <Button disabled={isBtnDisabled} type="submit" className="w-full flex items-center justify-center">
         {isLoading ? <FiLoader className="animate-spin h-5 w-5" /> : buttonText}
       </Button>
     </form>

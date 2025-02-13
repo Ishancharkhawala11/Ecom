@@ -28,6 +28,7 @@ import Search_Product from "./pages/shopping/Search_page";
 import Forgot_password from "./pages/auth/Forgot_password";
 import Otp_verfy from "./pages/auth/Otp_verfy";
 import Update_password from "./pages/auth/Update_password";
+import { Loader } from "lucide-react";
 
 function App() {
   // const isAuthenticated = false;
@@ -42,8 +43,9 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
   if(isLoading){
-    return<Skeleton className="w-[600px] h-[600px] rounded-full" />
-
+    return<div className="flex items-center justify-center min-h-screen bg-white">
+    <Loader className="animate-spin text-gray-700" size={50} />
+  </div>
   }
   return (
     <div className="flex flex-col overflow-hidden bg-white">
