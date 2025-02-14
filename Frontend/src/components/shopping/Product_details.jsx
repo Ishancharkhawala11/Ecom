@@ -95,8 +95,10 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
   const averageReview= reviews && reviews.length>0?
   reviews.reduce((sum,reviewItem)=>sum+reviewItem.reviewValue,0)/reviews.length:0
   return (
-    <Dialog open={open} onOpenChange={handleDialougeClose}>
-      <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w[80vw] lg:max-w-[70vw]">
+    <Dialog open={open} onOpenChange={handleDialougeClose} className='rounded-3xl'>
+   <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[80vw] h-[80vh] sm:h-auto max-h-screen overflow-y-auto rounded-3xl">
+
+  
         <div className="relative overflow-hidden rounded-lg">
           <img
             src={product_Details?.image}

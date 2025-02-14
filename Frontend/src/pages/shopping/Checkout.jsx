@@ -7,17 +7,21 @@ import { Button } from "@/components/ui/button";
 import { createNewOrder } from "@/store/Shop/order";
 import { useToast } from "@/hooks/use-toast";
 import { clearCart } from "@/store/Shop/Cartslice/index";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
+  const {orderItems}=useSelector(state=>state.shopOrder)
   const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const [isPaymentStart, setIsPaymentStart] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("paypal");
-
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   const { toast } = useToast();
+  console.log(cartItems,'checkOut');
+  
 useEffect(() => {
   if (cartItems.length === 0) {
     setCurrentSelectedAddress(null); // Reset address selection if needed
@@ -79,6 +83,7 @@ useEffect(() => {
         } else {
           toast({ title: "Order placed successfully with Cash on Delivery!", variant: "success" });
           // localStorage.setItem('orderId',orderId)
+          navigate('/shop/paypal-return')
           sessionStorage.removeItem("current_order_id")
           // localStorage.setItem('orderId',orderId)
           dispatch(clearCart());
