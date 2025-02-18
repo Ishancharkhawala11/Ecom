@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-
+import { clearCart } from "@/store/Shop/Cartslice/index";
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { mailSending } = useSelector((state) => state.shopOrder); 
@@ -15,11 +15,12 @@ const PaymentSuccess = () => {
 
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
-
+// const dispatch=useDispatch()
     if (orderId && user?.email) {
       dispatch(sendEmail({ orderId, email: user.email })).then(() => {
         setLoading(false); 
         localStorage.removeItem('orderId');
+         dispatch(clearCart());
       });
     } else {
       setLoading(false); 
@@ -48,6 +49,7 @@ const PaymentSuccess = () => {
             <p className="text-lg text-gray-400">Confirmation email sent successfully!</p>
           )}
           <Button 
+          disabled={mailSending}
             className="mt-6 bg-black text-white px-6 py-3 rounded-lg w-full"
             onClick={() => navigate('/shop/account')}
           >

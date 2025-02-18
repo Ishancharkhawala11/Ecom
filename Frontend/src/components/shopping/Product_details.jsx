@@ -99,13 +99,13 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
    <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[80vw] h-[80vh] sm:h-auto max-h-screen overflow-y-auto rounded-3xl">
 
   
-        <div className="relative overflow-hidden rounded-lg">
+        <div className="relative overflow-hidden ">
           <img
             src={product_Details?.image}
             alt={product_Details?.title}
             width={600}
             height={600}
-            className="aspect-square w-full object-cover"
+            className="aspect-square w-full object-contain rounded-lg"
           ></img>
         </div>
         <div className="">

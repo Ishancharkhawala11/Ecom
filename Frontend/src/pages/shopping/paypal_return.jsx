@@ -8,8 +8,8 @@ const Paypal_return = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const params = new URLSearchParams(location.search); //get params from url
-  const paymentId = params.get("paymentId");
-  const payerId = params.get("PayerID");
+  const paymentId = params.get("paymentId")||"null";
+  const payerId = params.get("PayerID")||'null';
   const {user}=useSelector(state=>state.auth)
   useEffect(() => {
     if (payerId && paymentId) {

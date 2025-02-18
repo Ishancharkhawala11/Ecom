@@ -111,48 +111,92 @@ const createOrder = async (req, res) => {
   }
 };
 
+// const captureOrder = async (req, res) => {
+
+//   try {
+//     const { orderId, paymentId, payerId } = req.body;
+//     let order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Order can not be found",
+//       });
+//     }
+//     order.paymentStatus = "paid";
+//     order.orderStatus = "confirmed";
+//     order.paymentId = paymentId;
+//     order.payerId = payerId;
+//     for (let item of order.cartItems) {
+//       let product = await Product.findById(item.productId);
+//       if (!product) {
+//         return res.status(404).json({
+//           success: false,
+//           message: `Not enough stock of this product ${product.title}`,
+//         });
+//       }
+//       product.totalStock -= item.quantity;
+//       await product.save();
+//     }
+//     const getCartId = order.cartId;
+//     await Cart.findByIdAndDelete(getCartId);
+//     await order.save();
+//     // await sendEmail(email,order)
+//     res.status(200).json({
+//       success: true,
+//       message: "Order confirm",
+//       data: order,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Some error occured",
+//     });
+//   }
+// };
 const captureOrder = async (req, res) => {
   try {
     const { orderId, paymentId, payerId } = req.body;
     let order = await Order.findById(orderId);
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order can not be found",
-      });
+    if (!order) return res.json({ success: false, message: "Order not found" });
+
+    if (order.paymentMethod === "cod") {
+      // For COD orders, directly confirm order
+      order.paymentStatus = "pending"; // Payment is still pending for COD
+      order.orderStatus = "confirmed";
+    } else if (order.paymentMethod === "paypal") {
+      // Ensure PayPal order has necessary payment details
+      if (!paymentId || !payerId) {
+        return res.status(400).json({ success: false, message: "Missing PayPal payment details" });
+      }
+
+      order.paymentStatus = "paid";
+      order.orderStatus = "confirmed";
+      order.paymentId = paymentId;
+      order.payerId = payerId;
     }
-    order.paymentStatus = "paid";
-    order.orderStatus = "confirmed";
-    order.paymentId = paymentId;
-    order.payerId = payerId;
+
+    // Deduct stock for ordered items
     for (let item of order.cartItems) {
       let product = await Product.findById(item.productId);
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Not enough stock of this product ${product.title}`,
-        });
+      if (!product || product.totalStock < item.quantity) {
+        return res.json({ success: false, message: `Not enough stock for ${item.title}` });
       }
       product.totalStock -= item.quantity;
       await product.save();
     }
-    const getCartId = order.cartId;
-    await Cart.findByIdAndDelete(getCartId);
+
+    // Remove cart after successful order
+    await Cart.findByIdAndDelete(order.cartId);
     await order.save();
-    // await sendEmail(email,order)
-    res.status(200).json({
-      success: true,
-      message: "Order confirm",
-      data: order,
-    });
+
+    res.status(200).json({ success: true, message: `Order confirmed${order.paymentMethod === "paypal" ? " (Paid via PayPal)" : " (COD)"}`, data: order });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured",
-    });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 const sendEmail = async (req, res) => {
   try {
   const { orderId, email } = req.body;
@@ -289,40 +333,40 @@ const pdfBuffer=await page.pdf({format:"A4",printBackground:true})
 await browser.close()
 return pdfBuffer
 }
-// const changePaymentStatus=async(req,res)=>{
-//   try {
-//     const {orderId}=req.body
-//     const order=await Order.findById(orderId);
-//      if(! order){
-//       return res.json({
-//         success:false,
-//         message:"Order is not found"
-//       }) 
-//      }
-//      if(order.orderStatus==='delivered' && order.paymentMethod==='cod')
-//       {
-//         order.paymentStatus='paid'
-//       }
-//       res.json({
-//         success:true,
-//         message:"Payment status is change to paid",
-//         data:order
-//       })
+const changePaymentStatus=async(req,res)=>{
+  try {
+    const {orderId}=req.body
+    const order=await Order.findById(orderId);
+     if(! order){
+      return res.json({
+        success:false,
+        message:"Order is not found"
+      }) 
+     }
+     if(order.orderStatus==='delivered' && order.paymentMethod==='cod')
+      {
+        order.paymentStatus='paid'
+      }
+      res.json({
+        success:true,
+        message:"Payment status is change to paid",
+        data:order
+      })
 
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Some error occured",
-//     });
-//   }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured",
+    });
+  }
      
-// }
+}
 module.exports = {
   createOrder,
   captureOrder,
   getAllOrderByUser,
   getOrderDetails,
   sendEmail,
-  // changePaymentStatus
+  changePaymentStatus
 };

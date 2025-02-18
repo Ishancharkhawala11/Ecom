@@ -45,7 +45,7 @@ const MenuItems = () => {
           onClick={() => handleNavigate(menuitem)}
           key={menuitem.id}
           // to={menuitem.path}
-          className="text-sm font-medium cursor-pointer"
+          className="text-sm font-medium cursor-pointer hover:text-blue-300"
         >
           {menuitem.label} {/* Added label for menu items */}
         </Label>

@@ -77,6 +77,7 @@ useEffect(()=>{
                           setOpenDetailsDialouge(false);
                           dispatch(resetOrderDetails());
                         }}
+                       
                       >
                         <Button
                           onClick={() =>

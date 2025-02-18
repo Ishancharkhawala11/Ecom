@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 const Shopping_order_details = ({orderDetails}) => {
   const {user}=useSelector(state=>state.auth)
   return (
-    <DialogContent className="sm:max-w-[600px] border rounded-lg">
+    <DialogContent className="sm:max-w-[600px] h-[40rem] border rounded-lg overflow-y-auto">
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">

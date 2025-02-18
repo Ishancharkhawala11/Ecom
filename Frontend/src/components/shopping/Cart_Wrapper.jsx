@@ -11,7 +11,7 @@ const User_Cart_Wrapper = ({cartItems,setOpenCartSheet}) => {
 cartItems.reduce((sum,currentItem)=>sum+(currentItem.salePrice>0?currentItem.salePrice:currentItem.price)*currentItem.quantity,0)
   : 0
   return (
-   <SheetContent className="sm:max-w-md">
+   <SheetContent className="sm:max-w-md overflow-y-auto">
    <SheetHeader>
    <SheetTitle>
    Your Cart
