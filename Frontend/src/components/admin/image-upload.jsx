@@ -90,7 +90,7 @@ if(imageFile!==null){
                 <FileIcon className="w-7 text-primary mr-2 h-8"/>
             </div>
             <p className="text-sm font-medium">{imageFile.name}</p>
-         <Button variant='ghost' size='icon' className='text-muted-foreground hover:text-foreground' onClick={handleRemoveImage}>
+         <Button  variant='ghost' size='icon' className='text-muted-foreground hover:text-foreground' onClick={handleRemoveImage}>
             <XIcon className="w-4 h-4">
                 <span className="sr-only">remove file</span>
             </XIcon>
