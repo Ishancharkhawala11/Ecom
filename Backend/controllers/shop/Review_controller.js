@@ -11,7 +11,7 @@ const addProductReview = async (req, res) => {
       orderStatus: "confirmed",
     });
     if (!order) {
-      res.status(400).json({
+      return res.json({
         success: false,
         message: "You need to purchase product first to review it",
       });
@@ -21,7 +21,7 @@ const addProductReview = async (req, res) => {
       userId,
     });
     if (checkExistingReview) {
-      return res.status(400).json({
+      return res.json({
         success: false,
         message: "You already reviewed this product! ",
       });
@@ -33,15 +33,17 @@ const addProductReview = async (req, res) => {
       reviewmessage,
       reviewValue,
     });
-    await newReview.save()
-    const reviews=await Review.find({productId})
-    const totalReviewsLength=reviews.length
-    const averageReview=reviews.reduce((sum,reviewItem)=>sum+reviewItem.reviewValue,0)/totalReviewsLength
-    await Product.findByIdAndUpdate(productId,{averageReview})
+    await newReview.save();
+    const reviews = await Review.find({ productId });
+    const totalReviewsLength = reviews.length;
+    const averageReview =
+      reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
+      totalReviewsLength;
+    await Product.findByIdAndUpdate(productId, { averageReview });
     res.status(201).json({
-        success:true,
-        data:newReview
-    })
+      success: true,
+      data: newReview,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -52,12 +54,12 @@ const addProductReview = async (req, res) => {
 };
 const getProductReviews = async (req, res) => {
   try {
-    const {productId}=req.params;
-    const reviews=await Review.find({productId})
+    const { productId } = req.params;
+    const reviews = await Review.find({ productId });
     res.status(200).json({
-      success:true,
-      data:reviews
-  })
+      success: true,
+      data: reviews,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -66,4 +68,38 @@ const getProductReviews = async (req, res) => {
     });
   }
 };
+// const deleteUserReview = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { userId } = req.body;
+//     const existReview = Review.findById(id);
+//     if (!existReview) {
+//       return res.json({
+//         success: false,
+//         message: "Review have not been available",
+//       });
+//     }
+//     if(existReview.userId.toString()!==userId){
+//       return res.json({
+//         success:false,
+//         message:"You can delete only your own reviews only"
+//       })
+//     }
+//     await existReview.findByIdAndDelete(id)
+//     const remainReviews=await Review.findById({productId:existReview.productId})
+//     const totalReviews=remainReviews.length
+//     const averageReviews=totalReviews>0?remainReviews.reduce((sum,review)=>sum-review.value,0):0
+//     await Product.findByIdAndUpdate(existReview.productId,{averageReviews})
+//     res.status(200).json({
+//       success: true,
+//       message: "Review deleted successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while deleting the review",
+//     });
+//   }
+// };
 module.exports = { addProductReview, getProductReviews };

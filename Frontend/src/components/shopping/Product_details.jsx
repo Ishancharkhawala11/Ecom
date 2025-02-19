@@ -22,6 +22,8 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
   const [ratting ,setRatting]=useState(0)
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
+  // console.log(reviews,"reviews");
+  
   const handleRatingChange=(getRatting)=>{
     setRatting(getRatting)
   }
@@ -39,6 +41,11 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
        toast({
         title:'Review Added successfully'
        })
+      }else{
+        toast({
+          title:data.payload.message,
+          variant:'destructive'
+        })
       }
       // console.log(data);
       
