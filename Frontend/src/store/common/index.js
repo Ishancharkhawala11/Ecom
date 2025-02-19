@@ -39,7 +39,9 @@ export const addFeatureImage = createAsyncThunk(
 const commonSlice = createSlice({
   name: "commonSlice",
   initialState,
-  reducers: {},
+  reducers: {
+   
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getFeatureImages.pending, (state) => {

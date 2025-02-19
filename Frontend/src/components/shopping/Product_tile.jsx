@@ -13,7 +13,7 @@ const Shopping_Product_tile = ({ product, handleProductDetails, HandleAddToCart 
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-[300px] object-contain   transition-transform duration-300 ease-in-out transform hover:scale-110 "
+            className="w-full h-[300px] object-fill   transition-transform duration-300 ease-in-out transform hover:scale-110 "
           />
           {product.totalStock === 0 ? (
             <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 ml-2">

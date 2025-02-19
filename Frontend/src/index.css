@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&display=swap'); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -57,46 +59,33 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-  
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Exo', sans-serif;
+    /* font-family: "Atkinson Hyperlegible Mono", serif; */
   }
-
-/* Completely hide scrollbar buttons (arrows) */
-/* Custom Scrollbar Styling */
-* {
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: black transparent; /* Black thumb, transparent track */
 }
 
-*::-webkit-scrollbar {
-  width: 6px; /* Thin scrollbar */
-  height: 6px; /* Shorter scrollbar */
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* Scrollbar Thumb */
-*::-webkit-scrollbar-thumb {
-  background-color: black; /* Black scrollbar thumb */
-  border-radius: 100px; /* Fully rounded scrollbar */
+::-webkit-scrollbar-track {
+  background: white;
 }
 
-/* Scrollbar Track */
-*::-webkit-scrollbar-track {
-  background: transparent; /* Transparent scrollbar track */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 5px;
 }
 
-/* Scrollbar Buttons (Arrows) - Hide but Keep Color */
-*::-webkit-scrollbar-button {
-  width: 0; /* Remove spacing */
-  height: 0; /* Remove spacing */
-  background-color: white !important; /* Set button color */
-  border-radius: 50%; /* Round shape */
-  visibility: hidden; /* Hide but color stays */
-}
-
-
+::-webkit-scrollbar-thumb:hover {
+  background: black;
 }

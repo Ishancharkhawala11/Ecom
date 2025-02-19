@@ -1,35 +1,37 @@
 const Feature=require('../../models/Feature')
-const addFeatureImage=async(req,res)=>{
+const addFeatureImage = async (req, res) => {
    try {
-    const {image}=req.body
-   //  console.log(image);
-    
-    const image_exist=await Feature.findOne({image})
-    console.log(image_exist);
-    
-    if(image_exist){
-     return res.json({
-          success:false,
-          message:'Image is already uploaded,cannot upload second time'
-      })
-    }
-
-    const featuresImages=new Feature({
-        image
-    })
-    await featuresImages.save()
-    res.status(201).json({
-        success:true,
-        data:featuresImages
-    })
+     const { image } = req.body;
+ 
+     // Check if the image is already uploaded by checking the `image` field
+     const imageExist = await Feature.findOne({ image });
+     if (imageExist) {
+       return res.json({
+         success: false,
+         message: 'Image is already uploaded, cannot upload a second time',
+       });
+     }
+ 
+     // Save the new image
+     const featuresImages = new Feature({
+       image,
+     });
+ 
+     await featuresImages.save();
+ 
+     res.status(201).json({
+       success: true,
+       data: featuresImages,
+     });
    } catch (error) {
-    console.log(error);
+     console.log(error);
      res.status(500).json({
-        success:false,
-        message:'some error occured'
-     })
+       success: false,
+       message: 'Some error occurred',
+     });
    }
-}
+ };
+ 
 const getFeatureImage=async(req,res)=>{
     try {
      const images=await Feature.find({})

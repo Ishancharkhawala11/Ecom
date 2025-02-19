@@ -11,14 +11,14 @@ const User_Cart_Wrapper = ({cartItems,setOpenCartSheet}) => {
 cartItems.reduce((sum,currentItem)=>sum+(currentItem.salePrice>0?currentItem.salePrice:currentItem.price)*currentItem.quantity,0)
   : 0
   return (
-   <SheetContent className="sm:max-w-md overflow-y-auto">
+   <SheetContent className="sm:max-w-md h-full flex flex-col">
    <SheetHeader>
    <SheetTitle>
    Your Cart
    </SheetTitle>
    
    </SheetHeader>
-<div className='mt-8  space-y-4'>
+<div className='mt-8  space-y-4 flex-grow pr-5 overflow-y-auto '>
   {
     cartItems && cartItems.length>0?
     cartItems.map(item=><User_Cart_Items_content key={item.id} cartItem={item}></User_Cart_Items_content>):null

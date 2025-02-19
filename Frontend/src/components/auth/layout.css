@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+/* @import url('https://fonts.googleapis.com/css?family=Exo:400,700'); */
 
 * {
     margin: 0;
@@ -6,9 +6,9 @@
     box-sizing: border-box;
 }
 
-body {
+/* body {
     font-family: 'Exo', sans-serif;
-}
+} */
 
 .left-section {
     position: relative;

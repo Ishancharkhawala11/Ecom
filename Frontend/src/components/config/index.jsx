@@ -237,14 +237,14 @@ export const addProductFormElements = [
     label: "Pincode",
     name: "pincode",
     componantType: "input",
-    type: "text",
+    type: "number",
     placeholder: "Enter your pincode",
   },
   {
     label: "Phone",
     name: "phone",
     componantType: "input",
-    type: "text",
+    type: "number",
     placeholder: "Enter your phone number",
   },
   {

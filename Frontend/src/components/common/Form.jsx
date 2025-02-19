@@ -27,6 +27,8 @@ const CommonForm = ({
   error = {},
   handleEmailChange,
   handlePasswordChange,
+  handlePhoneChange,
+  handlePincodeChange
 }) => {
   const [showPassword, setShowPassword] = useState({});
   const { isLoading } = useSelector((state) => state.auth);
@@ -59,6 +61,12 @@ const CommonForm = ({
                   handleEmailChange(e);
                 } else if (controlItem.name === "password") {
                   handlePasswordChange(e);
+                }
+                else if(controlItem.name==='pincode'){
+                  handlePincodeChange(e)
+                }
+                else if(controlItem.name==='phone'){
+                  handlePhoneChange(e)
                 }
                 setFormData((prev) => ({ ...prev, [controlItem.name]: e.target.value }));
               }}
