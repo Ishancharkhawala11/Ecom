@@ -5,7 +5,7 @@ const initialState = {
     productList: [],
     productDetails:null
 };
-
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 export const fetchAllfillteredProducts = createAsyncThunk(
     '/shop/fetchAllProduct',
     async ({filterParams,sortParams}) => {
@@ -20,7 +20,7 @@ export const fetchAllfillteredProducts = createAsyncThunk(
         console.log('Filter Params:', filterParams);
 console.log('Sort Params:', sortParams);
 
-        const response = await fetch(`http://localhost:5000/api/shop/product/get?${query}`, {
+        const response = await fetch(`${BASEURL}/api/shop/product/get?${query}`, {
             method: 'GET',
         });
         const result = await response.json();
@@ -33,7 +33,7 @@ export const  fetcProductdetails= createAsyncThunk(
     async (id) => {
         
       
-        const response = await fetch(`http://localhost:5000/api/shop/product/get/${id}`, {
+        const response = await fetch(`${BASEURL}/api/shop/product/get/${id}`, {
             method: 'GET',
         });
         const result = await response.json();

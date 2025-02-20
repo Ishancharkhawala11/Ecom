@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 // import { Table } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import { Button } from '../ui/button'
+// import { Button } from '../ui/button'
+import {CircleChevronRight } from "lucide-react";
 import { Dialog } from '../ui/dialog'
 // import Admin_Order_details from './Order_details'
 import { useDispatch, useSelector } from 'react-redux'
@@ -79,13 +80,17 @@ useEffect(()=>{
                         }}
                        
                       >
-                        <Button
+                        {/* <Button
                           onClick={() =>
                             handleFetchOrderDetails(orderItem?._id)
                           }
                         >
                           View Details
-                        </Button>
+                        </Button> */}
+                        <CircleChevronRight
+                        className=" cursor-pointer hover:text-blue-600 transition transform"
+                        onClick={() => handleFetchOrderDetails(orderItem._id)}
+                      />
                         <Admin_Order_details orderDetails={orderDetails} />
                       </Dialog>
                     </TableCell>

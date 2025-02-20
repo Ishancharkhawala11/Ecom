@@ -1,8 +1,9 @@
 const redis=require('redis')
+require('dotenv').config()
 
 const redisClient=redis.createClient(
     {
-        url:'rediss://red-ctudhfa3esus739b41m0:r4Sog2UwNox8Xg0E4YEsQkE8QetYBiaQ@oregon-redis.render.com:6379'
+        url:process.env.REDIS_URL
     }
     
 )

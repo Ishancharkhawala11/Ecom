@@ -6,12 +6,13 @@ import { LayoutDashboard } from 'lucide-react';
 import { ShoppingBasket } from 'lucide-react';
 import { BadgeCheck } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
+import { MdOutlineSpaceDashboard } from "react-icons/md";
  const adminsidebarMenuItems=[
   {
       'id':"dashboard",
       'label':"Dashboard",
       'path':'/admin/dashboard',
-      'icon':<LayoutDashboard/>
+      'icon':<MdOutlineSpaceDashboard size={25}/>
   },
   {
       'id':"products",
@@ -36,7 +37,7 @@ const MenuItems=({setOpen})=>{
       setOpen?setOpen(false):null
       }} className='flex items-center gap-2 rounded-md px-3 py-2 cursor-pointer hover:bg-gray-100'>
 {menuItem.icon}
-<span>{menuItem.label}</span>
+<span className="font-semibold">{menuItem.label}</span>
 
       </div>
     ))}

@@ -1,9 +1,10 @@
 const cloudinary=require("cloudinary").v2
+require('dotenv').config()
 const multer=require("multer")
 cloudinary.config({
-    cloud_name:'dml08upkg',
-    api_key:'695178539642361',
-    api_secret:'LS1K0uyY4_RrJLrm7MFazk0KSVQ'
+    cloud_name:process.env.CLOUDE_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_SECRET
 })
 const storage=new multer.memoryStorage()
 const ImageUploadUtils=async(file)=>{

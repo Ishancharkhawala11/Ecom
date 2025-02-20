@@ -13,10 +13,10 @@ const shopSearchRouter=require('./routes/Shop/Seach_routes')
 const shopReviewRouter=require('./routes/Shop/Review')
 const featureRouter=require('./routes/common/feature_route')
 const app = express();
-
+require('dotenv').config()
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: "http://localhost:5173", 
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
     credentials: true,
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(express.json()); 
 
 mongoose
-  .connect("mongodb+srv://ishan11012003:OVhgSt7FGum5rl1F@cluster0.jso1t.mongodb.net/")
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 

@@ -4,10 +4,11 @@ const initialState = {
   cartItems: [],
   isLoading: false,
 };
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 export const addToCart = createAsyncThunk(
   "cart/addtoCart",
   async ({ userId, productId, quantity }) => {
-    const response = await fetch("http://localhost:5000/api/shop/cart/add", {
+    const response = await fetch(`${BASEURL}/api/shop/cart/add`, {
       method: "POST",
       body: JSON.stringify({ userId, productId, quantity }),
       headers: {
@@ -23,7 +24,7 @@ export const fetchToCart = createAsyncThunk(
   "cart/fetchtoCart",
   async (userId) => {
     const response = await fetch(
-      `http://localhost:5000/api/shop/cart/get/${userId}`,
+      `${BASEURL}/api/shop/cart/get/${userId}`,
       {
         method: "GET",
       }
@@ -37,7 +38,7 @@ export const deleteCart = createAsyncThunk(
   "cart/deletCart",
   async ({ userId, productId }) => {
     const response = await fetch(
-      `http://localhost:5000/api/shop/cart/${userId}/${productId}`,
+      `${BASEURL}/api/shop/cart/${userId}/${productId}`,
       {
         method: "DELETE",
       }
@@ -51,7 +52,7 @@ export const updateCartQuantity = createAsyncThunk(
     "cart/updatetoCart",
     async ({userId,productId,quantity}) => {
       const response = await fetch(
-        'http://localhost:5000/api/shop/cart/update-cart',
+        `${BASEURL}/api/shop/cart/update-cart`,
         {
           method: "PUT",
           body: JSON.stringify({userId, productId, quantity} ),

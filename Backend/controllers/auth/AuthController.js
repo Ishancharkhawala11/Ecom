@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 const redisClient = require("../../helpers/redis");
+require('dotenv').config()
 //register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -72,7 +73,7 @@ const loginUser = async (req, res) => {
         email: checkUser.email,
         userName: checkUser.userName,
       },
-      "CLIENT_SECRET_KEY",
+      process.env.CLIENT_SECRET,
       { expiresIn: "60m" }
     );
     // console.log(token1)
@@ -114,7 +115,7 @@ const authMiddleware = async (req, res, next) => {
     });
 
   try {
-    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    const decoded = jwt.verify(token, process.env.CLIENT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
@@ -145,18 +146,18 @@ const forgotPassword = async (req, res) => {
     const tempPath=path.join(__dirname,'../../helpers/Otp.html')
     let emailHtml = fs.readFileSync(tempPath, "utf8");
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      service:process.env.SERVICE,
       auth: {
-        user: "ishan11012003@gmail.com",
-        pass: "sula fceb pbyz xqfu",
+        user: process.env.AUTH_EMAIL,
+        pass: process.env.AUTH_PASSWORD,
       },
     });
     const message = {
-      from: "ishan11012003@gmail.com", // Must match authenticated email
-      // replyTo: "ishankcharkhawala@gmail.com",
+      from: process.env.AUTH_EMAIL, // Must match authenticated email
+     
       to: email,
       subject: "OTP for password Reset",
-      // text: `Your otp is :${OTP} which is expire for ${expire}min`,
+      
       html:emailHtml.replace("{{OTP}}", OTP)
     };
     transporter.sendMail(message, (error, info) => {

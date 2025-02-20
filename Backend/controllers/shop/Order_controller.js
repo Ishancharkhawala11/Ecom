@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const User=require('../../models/User')
+require('dotenv').config()
 const createOrder = async (req, res) => {
   try {
     const {
@@ -69,11 +70,11 @@ const createOrder = async (req, res) => {
     }
 
     const create_payment_json = {
-      intent: "sale",
-      payer: { payment_method: "paypal" },
+      intent:  process.env.INTENT,
+      payer: { payment_method: process.env.PAYMENT_METHOD },
       redirect_urls: {
-        return_url: "http://localhost:5173/shop/paypal-return",
-        cancel_url: "http://localhost:5173/shop/paypal-cancel",
+        return_url: process.env.RETURN_URL,
+        cancel_url: process.env.CANCEL_URL,
       },
       transactions: [
         {
@@ -82,11 +83,11 @@ const createOrder = async (req, res) => {
               name: item.title,
               sku: item.productId,
               price: item.price.toFixed(2),
-              currency: "USD",
+              currency: process.env.CURRENCY,
               quantity: item.quantity,
             })),
           },
-          amount: { currency: "USD", total: totalAmount },
+          amount: { currency: process.env.CURRENCY, total: totalAmount },
           description: "Order Payment",
         },
       ],
@@ -207,18 +208,18 @@ const sendEmail = async (req, res) => {
       message: "Order can not be found",
     });
   }
-  const tempPath = path.join(__dirname, "../../helpers/Order.html");
+  const tempPath = path.join(__dirname, process.env.ORDER_HTML);
   let orderHtml = fs.readFileSync(tempPath, "utf8");
   const pdfBuffer=await generatePdf(order)
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: process.env.SERVICE,
     auth: {
-      user: "ishan11012003@gmail.com",
-      pass: "sula fceb pbyz xqfu",
+      user: process.env.AUTH_EMAIL,
+      pass: process.env.AUTH_PASSWORD,
     },
   });
   const message = {
-    from: "ishan11012003@gmail.com",
+    from: process.env.AUTH_EMAIL,
     to: email,
     subject: "Order COnfirmation Mail",
     
@@ -309,7 +310,7 @@ const generatePdf=async(order)=>{
   console.log(order.addressInfo[0].
     address," ",order.addressInfo[0].city,' ',user.userName);
   
-  const tempPath=path.join(__dirname,"../../helpers/Invoice.html")
+  const tempPath=path.join(__dirname,process.env.INVOICE_HTML)
   let htmlContent= fs.readFileSync(tempPath,'utf8')
   const orderItemsHtml=order.cartItems.map((item) => `
   <tr>

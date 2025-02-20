@@ -7,12 +7,13 @@ const initialState = {
   user: null,
   OtpSent:false,
 };
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 
 export const registerUser = createAsyncThunk(
   "/auth/register",
 
   async (formData) => {
-    const response = await fetch("http://localhost:5000/api/auth/register", {
+    const response = await fetch(`${BASEURL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export const loginUser = createAsyncThunk(
   "/auth/login",
 
   async (formData) => {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const response = await fetch(`${BASEURL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const logoutUser = createAsyncThunk(
   "/auth/logout",
 
   async () => {
-    const response = await fetch("http://localhost:5000/api/auth/logout", {
+    const response = await fetch(`${BASEURL}/api/auth/logout`, {
       method: "POST",
       
       credentials: "include", // Equivalent to 'withCredentials: true' in axios
@@ -73,7 +74,7 @@ export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
 
   async () => {
-    const response = await fetch("http://localhost:5000/api/auth/check-auth", {
+    const response = await fetch(`${BASEURL}/api/auth/check-auth`, {
       method: "GET",
       headers: {
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
@@ -89,15 +90,15 @@ export const checkAuth = createAsyncThunk(
   }
 );
 export const forgotPassword=createAsyncThunk('auth/forgot',async(email)=>{
-  const response=await axios.post('http://localhost:5000/api/auth/forgot',email)
+  const response=await axios.post(`${BASEURL}/api/auth/forgot`,email)
   return response.data;
 })
 export const verifyOtp=createAsyncThunk('auth/verify',async({formData})=>{
-  const response=await axios.post('http://localhost:5000/api/auth/verify',formData)
+  const response=await axios.post(`${BASEURL}/api/auth/verify`,formData)
   return response.data
 })
 export const resetPass=createAsyncThunk('auth/resetPass',async(formData)=>{
-  const response=await axios.post('http://localhost:5000/api/auth/reset',formData)
+  const response=await axios.post(`${BASEURL}/api/auth/reset`,formData)
   return response.data
 })
 const authSlice = createSlice({

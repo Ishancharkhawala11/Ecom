@@ -1,17 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Axis3D } from "lucide-react";
+
 // import { build } from "vite";
 const initialState={
     isLoading:false,
     orderList:[],
     orderDetails:null
 }
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 export const getAllOrdersForAdmin = createAsyncThunk(
     "/Order/getAllOrdersForAdmin",
     async () => {
       const response = await axios.get(
-      'http://localhost:5000/api/admin/orders/get'
+      `${BASEURL}/api/admin/orders/get`
       );
       return response.data;
     }
@@ -20,7 +21,7 @@ export const getAllOrdersForAdmin = createAsyncThunk(
     "/Order/updateOrderStatus",
     async ({id,orderStatus}) => {
       const response = await axios.put(
-      `http://localhost:5000/api/admin/orders/update/${id}`,{orderStatus}
+      `${BASEURL}/api/admin/orders/update/${id}`,{orderStatus}
       );
       return response.data;
     }
@@ -29,13 +30,13 @@ export const getAllOrdersForAdmin = createAsyncThunk(
     "/Order/getAllOrderDetailsForAdmin",
     async (id) => {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/orders/details/${id}`
+        `${BASEURL}/api/admin/orders/details/${id}`
       );
       return response.data;
     }
   );
   export const changeOrderStatus=createAsyncThunk('/Order/changOrderStatus',async(orderId)=>{
-    const response=await axios.put('http://localhost:5000/api/admin/orders/status',{orderId})
+    const response=await axios.put(`${BASEURL}/api/admin/orders/status`,{orderId})
     return response.data
   })
   const adminOrderSlice = createSlice({
@@ -81,7 +82,7 @@ export const getAllOrdersForAdmin = createAsyncThunk(
           state.isLoading = false;
         
           if (action.payload.success) {
-            state.orderDetails = action.payload.data; // Update state with new order data
+            state.orderDetails = action.payload.data; 
           }
           
         })

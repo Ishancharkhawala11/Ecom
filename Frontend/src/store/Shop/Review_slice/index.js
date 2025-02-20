@@ -4,11 +4,12 @@ const initialState={
     isLoading:false,
     reviews:[]
 }
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 export const addReview = createAsyncThunk(
     "/shop/addReview",
     async (data) => {
       const response = await axios.post(
-        `http://localhost:5000/api/shop/reviews/add`,data
+        `${BASEURL}/api/shop/reviews/add`,data
       );
       return response.data;
     }
@@ -17,7 +18,7 @@ export const addReview = createAsyncThunk(
     "/shop/getReviews",
     async (productId) => {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/reviews/${productId}`
+        `${BASEURL}/api/shop/reviews/${productId}`
       );
       return response.data;
     }

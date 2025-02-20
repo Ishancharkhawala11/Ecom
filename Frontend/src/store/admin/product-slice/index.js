@@ -3,8 +3,9 @@ const initialState={
     isLoading:false,
     productList:[],
 }
+const BASEURL=import.meta.env.VITE_BACKEND_APIS_ROUTE;
 export const addNewProduct=createAsyncThunk('/product/addnewproduct',async(formData)=>{
-    const response=await  fetch("http://localhost:5000/api/admin/product/add",{
+    const response=await  fetch(`${BASEURL}/api/admin/product/add`,{
        method:'POST',
        body:JSON.stringify(formData),
        headers:{
@@ -15,7 +16,7 @@ export const addNewProduct=createAsyncThunk('/product/addnewproduct',async(formD
     return result;
 })
 export const fetchAllProducts=createAsyncThunk('/product/fetchAllProducts',async(formData)=>{
-    const response=await  fetch("http://localhost:5000/api/admin/product/get",{
+    const response=await  fetch(`${BASEURL}/api/admin/product/get`,{
        method:'GET',
     //    body:JSON.stringify(formData),
     //    headers:{
@@ -26,7 +27,7 @@ export const fetchAllProducts=createAsyncThunk('/product/fetchAllProducts',async
     return result.data;
 })
 export const EditProduct=createAsyncThunk('/product/EditProduct',async({id,formData})=>{
-    const response=await  fetch(`http://localhost:5000/api/admin/product/edit/${id}`,{
+    const response=await  fetch(`${BASEURL}/api/admin/product/edit/${id}`,{
        method:'PUT',
        body:JSON.stringify(formData),
        headers:{
@@ -37,7 +38,7 @@ export const EditProduct=createAsyncThunk('/product/EditProduct',async({id,formD
     return result;
 })
 export const DeleteProduct=createAsyncThunk('/product/deleteProduct',async(id)=>{
-    const response=await  fetch(`http://localhost:5000/api/admin/product/delete/${id}`,{
+    const response=await  fetch(`${BASEURL}/api/admin/product/delete/${id}`,{
        method:'DELETE',
     //    body:JSON.stringify(formData),
     //    headers:{

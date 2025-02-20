@@ -8,6 +8,7 @@ import { createNewOrder } from "@/store/Shop/order";
 import { useToast } from "@/hooks/use-toast";
 import { clearCart } from "@/store/Shop/Cartslice/index";
 import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -193,6 +194,7 @@ const handleInitiatePayment = () => {
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </div>
   );
 };
