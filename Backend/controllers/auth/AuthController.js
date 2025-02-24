@@ -61,10 +61,10 @@ const loginUser = async (req, res) => {
         success: false,
         message: "Incorrect password! Please try again",
       });
-    console.log(checkUser._id);
-    console.log(checkUser.role);
-    console.log(checkUser.email);
-    console.log(checkUser.userName);
+    // console.log(checkUser._id);
+    // console.log(checkUser.role);
+    // console.log(checkUser.email);
+    // console.log(checkUser.userName);
 
     const token1 = jwt.sign(
       {
@@ -142,7 +142,7 @@ const forgotPassword = async (req, res) => {
     const OTP = Math.floor(100000 + Math.random() * 900000);
     const expire = Date.now() + 10 * 60 * 1000;
     await redis.setEx(email, 600, JSON.stringify({ OTP, expire }));
-    console.log(`otp for ${user.email} is ${OTP}`);
+    // console.log(`otp for ${user.email} is ${OTP}`);
     const tempPath=path.join(__dirname,'../../helpers/Otp.html')
     let emailHtml = fs.readFileSync(tempPath, "utf8");
     const transporter = nodemailer.createTransport({
@@ -168,7 +168,7 @@ const forgotPassword = async (req, res) => {
           success: false,
         });
       }
-      console.log("Email sent:", info.response);
+      // console.log("Email sent:", info.response);
       res.send({
         message: "OTP sent to your email successfully.",
         success: true,

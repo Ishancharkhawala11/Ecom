@@ -38,27 +38,27 @@ const Product_image_upload = ({
 
   const handleRemoveImage = () => {
     setImageFile(null);
-    setuploadedImageUrl(''); // Clear the uploadedImageUrl state when image is removed
+    setuploadedImageUrl("");
     if (inputRef.current) {
-      inputRef.current.value = '';
+      inputRef.current.value = "";
     }
   };
 
   const uploadImageToCloudinary = async () => {
     setImageLoading(true);
-    setuploadedImageUrl(''); // Clear uploaded image URL before uploading a new one
+    setuploadedImageUrl("");
 
     const data = new FormData();
-    data.append('my_file', imageFile);
+    data.append("my_file", imageFile);
 
     const response = await fetch("http://localhost:5000/api/admin/product/upload-image", {
-      method: 'POST',
+      method: "POST",
       body: data,
     });
 
     const result = await response.json();
     if (result.success) {
-      setuploadedImageUrl(result.data.url); // Set the new uploaded image URL
+      setuploadedImageUrl(result.data.url);
       setImageLoading(false);
     }
   };
@@ -70,19 +70,20 @@ const Product_image_upload = ({
   }, [imageFile]);
 
   useEffect(() => {
-    // Reset the image preview when the uploadedImageUrl changes (when the image is uploaded)
-    if (uploadedImageUrl === '') {
-      setImageFile(null); // Reset the file input as well
+    if (uploadedImageUrl === "") {
+      setImageFile(null);
     }
   }, [uploadedImageUrl]);
 
   return (
-    <div className={`w-full mt-4 ${isCustomStyling ? '' : 'max-w-md mx-auto'}`}>
+    <div className={`w-full mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}>
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleOnDrop}
-        className={`${isEditMode ? 'opacity-60' : ''} border-2 border-dashed rounded-lg p-4`}
+        className={`${
+          isEditMode ? "opacity-60" : ""
+        } border-2 border-dashed rounded-md p-2 h-20 flex flex-col items-center justify-center text-center`}
       >
         <Input
           id="image-upload"
@@ -95,43 +96,38 @@ const Product_image_upload = ({
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className={`${isEditMode ? 'cursor-not-allowed' : 'cursor-pointer'} flex flex-col items-center justify-center h-32`}
+            className={`${
+              isEditMode ? "cursor-not-allowed" : "cursor-pointer"
+            } flex flex-col items-center justify-center text-xs text-gray-600`}
           >
-            <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
-            <span>Drag & drop or click to</span>
+            <UploadCloudIcon className="w-6 h-6 text-muted-foreground mb-1" />
+            <span className="block">Drag & drop or click to upload</span>
           </Label>
+        ) : imageLoading ? (
+          <Skeleton className="h-10 w-full bg-gray-200 rounded-md mx-auto p-2" />
         ) : (
-          imageLoading ? (
-            <Skeleton className="h-10 bg-gray-100" />
-          ) : (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <FileIcon className="w-7 text-primary mr-2 h-8" />
-              </div>
-              <p className="text-sm font-medium">{imageFile.name}</p>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:text-foreground"
-                onClick={handleRemoveImage}
-              >
-                <XIcon className="w-4 h-4">
-                  <span className="sr-only">remove file</span>
-                </XIcon>
-              </Button>
+          <div className="flex items-center justify-between w-full p-3">
+            <div className="flex items-center">
+              <FileIcon className="w-5 text-primary mr-1 h-5" />
             </div>
-          )
+            <p className="text-base font-medium truncate max-w-[150px]">{imageFile.name}</p>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-foreground"
+              onClick={handleRemoveImage}
+            >
+              <XIcon className="w-4 h-4">
+                <span className="sr-only">remove file</span>
+              </XIcon>
+            </Button>
+          </div>
         )}
       </div>
 
-      {/* Display image preview if uploadedImageUrl is set */}
       {uploadedImageUrl && !imageLoading && (
-        <div className="mt-4">
-          <img
-            src={uploadedImageUrl}
-            alt="Uploaded"
-            className="w-full h-64 object-cover rounded-lg"
-          />
+        <div className="mt-2">
+          <img src={uploadedImageUrl} alt="Uploaded" className="w-full h-[300px] object-fill rounded-md" />
         </div>
       )}
     </div>

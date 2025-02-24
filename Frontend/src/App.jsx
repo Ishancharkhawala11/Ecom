@@ -29,6 +29,7 @@ import Forgot_password from "./pages/auth/Forgot_password";
 import Otp_verfy from "./pages/auth/Otp_verfy";
 import Update_password from "./pages/auth/Update_password";
 import { Loader } from "lucide-react";
+import AdminNotification from "./pages/admin/Notification";
 
 function App() {
   // const isAuthenticated = false;
@@ -78,6 +79,7 @@ function App() {
           <Route path="products" element={<AdminProduct />}></Route>
           <Route path="features" element={<AdminFeature />}></Route>
           <Route path="orders" element={<Shopping_order />}></Route>
+          <Route path="notification" element={<AdminNotification/>}></Route>
         </Route>
 
         <Route

@@ -25,7 +25,8 @@ import { MdOutlineSpaceDashboard } from "react-icons/md";
       'label':"Orders",
       'path':'/admin/orders',
       'icon': <BadgeCheck />
-  }
+  },
+  
 ]
 const MenuItems=({setOpen})=>{
   const navigate=useNavigate()

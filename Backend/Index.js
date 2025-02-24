@@ -12,8 +12,13 @@ const AdminOrderRouter=require('./routes/admin/order_route')
 const shopSearchRouter=require('./routes/Shop/Seach_routes')
 const shopReviewRouter=require('./routes/Shop/Review')
 const featureRouter=require('./routes/common/feature_route')
+const notification=require('./routes/admin/notification')
 const app = express();
+const http=require('http')
+const {initializeSocket}=require('./controllers/admin/Notification')
 require('dotenv').config()
+const server=http.createServer(app)
+initializeSocket(server)
 
 app.use(cors({
     origin: "http://localhost:5173", 
@@ -41,7 +46,7 @@ app.use('/api/admin/orders',AdminOrderRouter)
 app.use('/api/shop/search',shopSearchRouter)
 app.use('/api/shop/reviews',shopReviewRouter)
 app.use('/api/common/feature',featureRouter)
-
+app.use('/api/admin',notification)
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

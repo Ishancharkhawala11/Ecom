@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import { Loader } from "lucide-react";
+import "./ProductImageUpload.css"; // Import custom CSS for scrollbar
 
 const AdminDashBoard = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -59,11 +60,12 @@ const AdminDashBoard = () => {
         )}
       </Button>
 
-      <div className='flex flex-col gap-5 mt-10'>
+      {/* Scrolling feature added here with custom scrollbar class */}
+      <div className="mt-10 lg:max-h-[400px] lg:overflow-y-auto overflow-auto border rounded-lg p-4 custom-scrollbar">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map(featureImage => (
-              <div key={featureImage._id} className='border relative rounded-lg overflow-hidden'>
-                <img src={featureImage.image} className='w-full h-[500px] object-cover rounded-t-lg' />
+              <div key={featureImage._id} className='border relative rounded-lg overflow-hidden mb-5'>
+                <img src={featureImage.image} className='w-full h-[500px] object-fill rounded-t-lg' />
                 <Button
                   className='absolute top-2 right-2 bg-black text-white'
                   onClick={() => handleDeleteImage(featureImage._id)}

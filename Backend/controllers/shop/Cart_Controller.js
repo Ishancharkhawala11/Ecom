@@ -3,9 +3,9 @@ const Product = require("../../models/product");
 const addToCart = async (req, res) => {
   try {
     const { userId, productId, quantity } = req.body;
-    console.log(userId)
-    console.log(productId);
-    console.log(quantity)
+    // console.log(userId)
+    // console.log(productId);
+    // console.log(quantity)
     
     if (!userId || !productId || quantity <= 0) {
       return res.status(400).json({

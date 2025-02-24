@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { clearCart } from "@/store/Shop/Cartslice/index";
+import { io } from 'socket.io-client';
+const socket=io(import.meta.env.VITE_BACKEND_APIS_ROUTE)
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { mailSending } = useSelector((state) => state.shopOrder); 
@@ -20,6 +22,11 @@ const PaymentSuccess = () => {
       dispatch(sendEmail({ orderId, email: user.email })).then(() => {
         setLoading(false); 
         localStorage.removeItem('orderId');
+        socket.emit("sendNotification",{
+          message:`order ${orderId} is confirmed`,
+          user: user.email,
+          orderId
+        })
          dispatch(clearCart());
       });
     } else {

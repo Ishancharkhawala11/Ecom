@@ -242,7 +242,7 @@ const sendEmail = async (req, res) => {
         success: false,
       });
     }
-    console.log("Email sent:", info.response);
+    // console.log("Email sent:", info.response);
     res.json({
       success:true,
       message:'Email send Successfully'
@@ -307,8 +307,8 @@ const generatePdf=async(order)=>{
   const browser=await puppeteer.launch({headless:'new'})
  
   const page=await browser.newPage()
-  console.log(order.addressInfo[0].
-    address," ",order.addressInfo[0].city,' ',user.userName);
+  // console.log(order.addressInfo[0].
+  //   address," ",order.addressInfo[0].city,' ',user.userName);
   
   const tempPath=path.join(__dirname,process.env.INVOICE_HTML)
   let htmlContent= fs.readFileSync(tempPath,'utf8')
