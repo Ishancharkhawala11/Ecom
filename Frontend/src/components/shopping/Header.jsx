@@ -1,6 +1,6 @@
 import { HousePlug, Menu } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { SheetTrigger, Sheet, SheetContent } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { shoopingViewMenuItems } from "../config"; // Corrected import
 import { ShoppingCart } from "lucide-react";
 import { UserCog } from "lucide-react";
 import { LogOut } from "lucide-react";
+import { Search } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +76,7 @@ const HeaderRight = () => {
   // console.log(cartItems.items,'Header')
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+    <Search className="cursor-pointer" onClick={()=>{navigate('/shop/search')}}/>
       <Sheet
         open={openCartSheet}
         onOpenChange={() => {
@@ -88,6 +90,7 @@ const HeaderRight = () => {
           size="icon"
           className='relative'
         >
+         
           <ShoppingCart className="h-6 w-6" />
           <span className="absolute top-[-5px] right-[2px] font-extrabold text-sm">{cartItems?.items?.length ||0}</span>
           <span className="sr-only">User cart</span>
@@ -143,7 +146,7 @@ const ShoppingHeader = () => {
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link className="flex items-center gap-2" to="/shop/home">
           <HousePlug className="h-6 w-6" />
-          <span className="font-bold">E-commerce</span>
+          <span className="font-bold text-xl">ShopEase</span>
         </Link>
 
         <Sheet>

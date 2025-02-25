@@ -29,28 +29,34 @@ import { useToast } from "@/hooks/use-toast";
 import Product_details_dialog from "@/components/shopping/Product_details";
 import { getFeatureImages } from "@/store/common";
 import Footer from "./Footer";
+import { CgAdidas } from "react-icons/cg";
+import { SiNike, SiPuma, SiZara } from "react-icons/si";
+import Hm from '../../assets/H&m.png'
+import levis from '../../assets/levis.png'
+import Shoes from '../../assets/shoes.png'
+import Women from '../../assets/women.png'
+
 const categoriesWithIcon = [
-  { id: "men", label: "Men", icon: ShirtIcon },
-  ...[{ id: "women", label: "Women", icon: CloudLightning }],
-  { id: "kids", label: "Kids", icon: BabyIcon },
-  { id: "accessories", label: "Accessories", icon: WatchIcon },
-  { id: "footwear", label: "Footwear", icon: UmbrellaIcon },
+  { id: "men", label: "Men", icon: <ShirtIcon className="w-12 h-12 text-primary" />},
+  { id: "women", label: "Women", icon: <img src={Women} alt="Women" className="w-12 h-12" />},
+  { id: "kids", label: "Kids", icon: <BabyIcon className="w-12 h-12 text-primary" />},
+  { id: "accessories", label: "Accessories", icon: <WatchIcon className="w-12 h-12 text-primary" />},
+  { id: "footwear", label: "Footwear", icon: <img src={Shoes} alt="Footwear" className="w-12 h-12" /> },
 ];
+
 const brandWithIcons = [
-  { id: "nike", label: "Nike", icon: Shirt },
-  { id: "adidas", label: "Adidas", icon: WashingMachine },
-  { id: "puma", label: "Puma", icon: ShoppingBasket },
-  { id: "levi", label: "Levi's", icon: Airplay },
-  { id: "zara", label: "Zara", icon: Images },
-  { id: "h&m", label: "H&M", icon: Heater },
+  { id: "nike", label: "Nike", icon: <SiNike className="w-12 h-12 text-primary" /> },
+  { id: "adidas", label: "Adidas", icon: <CgAdidas className="w-12 h-12 text-primary" /> },
+  { id: "puma", label: "Puma", icon: <SiPuma className="w-12 h-12 text-primary" /> },
+  { id: "levi", label: "Levi's", icon: <img src={levis} alt="Levi's" className="w-12 h-12" /> },
+  { id: "zara", label: "Zara", icon: <SiZara className="w-12 h-12 text-primary" /> },
+  { id: "h&m", label: "H&M", icon: <img src={Hm} alt="H&M" className="w-12 h-12" /> },
 ];
+
 const ShoppingHome = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector(
-    (state) => state.shopProduct
-  );
+  const { productList, productDetails } = useSelector((state) => state.shopProduct);
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -58,68 +64,43 @@ const ShoppingHome = () => {
   const { featureImageList } = useSelector((state) => state.commonFeature);
   const slides = featureImageList.map((img) => img.image);
   const { cartItems } = useSelector((state) => state.shopCart);
-  useEffect(() => {
-    console.log(featureImageList, "images");
 
+  useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide(
-        (prevSlide) => (prevSlide + 1) % featureImageList.length
-      );
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
     }, 2000);
     return () => clearInterval(timer);
   }, [featureImageList.length]);
+
   useEffect(() => {
     if (productDetails !== null) {
       setOpenDetailsDialoge(true);
     }
   }, [productDetails]);
+
   useEffect(() => {
     dispatch(getFeatureImages());
   }, [dispatch]);
+
   useEffect(() => {
-    dispatch(
-      fetchAllfillteredProducts({
-        filterParams: {},
-        sortParams: "price-lowtohigh",
-      })
-    );
+    dispatch(fetchAllfillteredProducts({
+      filterParams: {},
+      sortParams: "price-lowtohigh",
+    }));
   }, []);
-  //  console.log(productList,'Home page')
+
   const handleProductDetails = (getcurrentProductId) => {
-    console.log(getcurrentProductId, "details");
     dispatch(fetcProductdetails(getcurrentProductId));
   };
-  //  const HandleAddToCart=(getcurrentProductId)=>{
-  //     console.log(getcurrentProductId,'cart');
-  //     dispatch(addToCart({userId:user.id, productId:getcurrentProductId, quantity:1})).then(data=>{
-  //       // console.log(data)
-  //       if(data.payload.success){
-  //         dispatch(fetchToCart(user.id)).then((data)=>{
-  //           console.log(data,"HomeCart");
 
-  //         })
-  //         // console.log();
-
-  //         toast({
-  //           title:"Product has been added in cart"
-  //         })
-  //       }
-
-  //     })
-  //   }
   const HandleAddToCart = (getcurrentProductId, getTotalStock) => {
-    // console.log(getcurrentProductId);
     let getCartItems = cartItems.items || [];
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
         (item) => item.productId === getcurrentProductId
       );
-      // if(indexOfCurrentItem)
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        console.log(getQuantity, "getQuantity");
-        console.log(getTotalStock, "totalStock");
-
         if (getQuantity + 1 > getTotalStock) {
           toast({
             title: `Only ${getQuantity} quantity can be added`,
@@ -129,14 +110,11 @@ const ShoppingHome = () => {
         }
       }
     }
-    dispatch(
-      addToCart({
-        userId: user.id,
-        productId: getcurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      // console.log(data)
+    dispatch(addToCart({
+      userId: user.id,
+      productId: getcurrentProductId,
+      quantity: 1,
+    })).then((data) => {
       if (data.payload.success) {
         dispatch(fetchToCart(user.id));
         toast({
@@ -145,6 +123,7 @@ const ShoppingHome = () => {
       }
     });
   };
+
   const handleNavigateToListingPage = (getCurrentItem, section) => {
     sessionStorage.removeItem("filters");
     const currentFiletrs = {
@@ -153,6 +132,7 @@ const ShoppingHome = () => {
     sessionStorage.setItem("filters", JSON.stringify(currentFiletrs));
     navigate(`/shop/listing`);
   };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Banner Section */}
@@ -162,18 +142,14 @@ const ShoppingHome = () => {
             <img
               src={slide.image}
               key={index}
-              className={`${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              } absolute top-0 left-0 w-full h-full object-fill md:object-cover transition-opacity duration-1000`}
+              className={`${index === currentSlide ? "opacity-100" : "opacity-0"} absolute top-0 left-0 w-full h-full object-fill md:object-cover transition-opacity duration-1000`}
               alt={`Slide ${index + 1}`}
             />
           ))
         ) : null}
         <Button
           onClick={() =>
-            setCurrentSlide(
-              (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
-            )
+            setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length)
           }
           variant="outline"
           size="icon"
@@ -196,20 +172,16 @@ const ShoppingHome = () => {
       {/* Categories Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Shop by category
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Shop by category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {categoriesWithIcon.map((categoryItem) => (
               <Card
-                onClick={() =>
-                  handleNavigateToListingPage(categoryItem, "category")
-                }
+                onClick={() => handleNavigateToListingPage(categoryItem, "category")}
                 key={categoryItem.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <categoryItem.icon className="w-12 h-12 mt-4 text-primary" />
+                {categoryItem.icon}
                   <span className="font-bold mt-2">{categoryItem.label}</span>
                 </CardContent>
               </Card>
@@ -217,11 +189,11 @@ const ShoppingHome = () => {
           </div>
         </div>
       </section>
+
+      {/* Brands Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Shop by category
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {brandWithIcons.map((BrandItem) => (
               <Card
@@ -230,7 +202,7 @@ const ShoppingHome = () => {
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <BrandItem.icon className="w-12 h-12 mt-4 text-primary" />
+                  {BrandItem.icon}
                   <span className="font-bold mt-2">{BrandItem.label}</span>
                 </CardContent>
               </Card>
@@ -238,6 +210,8 @@ const ShoppingHome = () => {
           </div>
         </div>
       </section>
+
+      {/* Feature Products Section */}
       <section className="py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Feature</h2>
@@ -257,12 +231,14 @@ const ShoppingHome = () => {
           </div>
         </div>
       </section>
+
       <Product_details_dialog
         open={openDetailDialog}
         setOpen={setOpenDetailsDialoge}
         product_Details={productDetails}
-      ></Product_details_dialog>
-      <Footer></Footer>
+      />
+
+      <Footer />
     </div>
   );
 };

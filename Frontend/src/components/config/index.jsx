@@ -188,11 +188,11 @@ export const addProductFormElements = [
       label:'Accesories',
       path:'/shop/listing'
     },
-    {
-      id:'search',
-      label:'Search',
-      path:'/shop/search'
-    }
+    // {
+    //   id:'search',
+    //   label:'Search',
+    //   path:'/shop/search'
+    // }
   ]
   export const filterOptions = {
     category: [

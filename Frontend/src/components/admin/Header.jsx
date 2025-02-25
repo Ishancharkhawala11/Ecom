@@ -11,11 +11,11 @@ const socket = io(import.meta.env.VITE_BACKEND_APIS_ROUTE);
 const AdminHeader = ({ setOpen }) => {
   const dispatch = useDispatch();
   const [notificationCount, setNotificationCount] = useState(0);
-
+  const BASEURL = import.meta.env.VITE_BACKEND_APIS_ROUTE;
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/admin/notifications");
+        const response = await fetch(`${BASEURL}/api/admin/notifications`);
         const data = await response.json();
         if (data.success) {
           const unreadCount = data.data.filter((notification) => !notification.read).length;

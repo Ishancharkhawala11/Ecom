@@ -38,6 +38,10 @@ const initializeSocket = (server) => {
           console.error("Error marking notification as read:", error);
         }
       });
+      socket.on('deleteNotification',async({id})=>{
+        await Notification.findByIdAndDelete(id)
+        io.emit('notificationDelete',{id})
+      })
   
       socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
