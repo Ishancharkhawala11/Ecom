@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 import contact from '../../assets/ContactUs.webp';
-import Footer from "./Footer";
+import Footer from "../../components/shopping/Footer";
 
 export default function ContactUs() {
     return (

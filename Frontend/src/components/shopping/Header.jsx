@@ -1,6 +1,6 @@
-import { HousePlug, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { SheetTrigger, Sheet, SheetContent } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";

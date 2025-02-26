@@ -1,5 +1,5 @@
 import about from "../../assets/About.webp"
-import Footer from "./Footer";
+import Footer from "../../components/shopping/Footer";
 export default function AboutUs() {
     return (
         <div>

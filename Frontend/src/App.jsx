@@ -30,8 +30,11 @@ import Otp_verfy from "./pages/auth/Otp_verfy";
 import Update_password from "./pages/auth/Update_password";
 import { Loader } from "lucide-react";
 import AdminNotification from "./pages/admin/Notification";
-import ContactUs from "./components/shopping/ContactUs";
-import AboutUs from "./components/shopping/AboutUs";
+// import ContactUs from "./components/shopping/ContactUs";
+import AboutUs from "./pages/shopping/AboutUs";
+
+import ContactUs from "./pages/shopping/ContactUs";
+import PrivatePolicy from "./pages/shopping/PrivatePolicy";
 
 function App() {
   // const isAuthenticated = false;
@@ -113,6 +116,7 @@ function App() {
           <Route path="payment-success" element={<Payment_success/>} />
           <Route path="contact" element={<ContactUs/>} />
           <Route path="about" element={<AboutUs/>} />
+          <Route path="policy" element={<PrivatePolicy/>} />
         </Route>
 
         <Route path="*" element={<NotFound></NotFound>}></Route>
