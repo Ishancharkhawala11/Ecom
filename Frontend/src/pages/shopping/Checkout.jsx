@@ -8,7 +8,7 @@ import { createNewOrder } from "@/store/Shop/order";
 import { useToast } from "@/hooks/use-toast";
 import { clearCart } from "@/store/Shop/Cartslice/index";
 import { useNavigate } from "react-router-dom";
-import Footer from "./Footer";
+import Footer from "../../components/shopping/Footer";
 
 const ShoppingCheckout = () => {
   const { cartItems } = useSelector((state) => state.shopCart);

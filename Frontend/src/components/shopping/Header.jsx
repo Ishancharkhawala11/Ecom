@@ -22,6 +22,7 @@ import { logoutUser } from "@/store/auth-slice";
 import User_Cart_Wrapper from "./Cart_Wrapper";
 import { fetchToCart } from "@/store/Shop/Cartslice";
 import { Label } from "../ui/label";
+import shop from '../../assets/shop_1.png'
 const MenuItems = () => {
   const navigate = useNavigate();
   const location=useLocation()
@@ -145,7 +146,8 @@ const ShoppingHeader = () => {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <Link className="flex items-center gap-2" to="/shop/home">
-          <HousePlug className="h-6 w-6" />
+          {/* <HousePlug className="h-6 w-6" /> */}
+          <img src={shop} alt="Icon" className="w-7 h-7 pb-1"></img>
           <span className="font-bold text-xl">ShopEase</span>
         </Link>
 

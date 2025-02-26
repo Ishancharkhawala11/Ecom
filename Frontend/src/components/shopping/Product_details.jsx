@@ -3,7 +3,6 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { StarIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchToCart } from "@/store/Shop/Cartslice";
@@ -12,192 +11,131 @@ import { setproductDetails } from "@/store/Shop/Product_slice";
 import { Label } from "../ui/label";
 import Star_ratting from "../common/Star_ratting";
 import { addReview, getReviews } from "@/store/Shop/Review_slice";
+import './Scrollbar.css'
 
-const Product_details_dialog = ({ open, setOpen, product_Details }) => {
+const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
   const dispatch = useDispatch();
-  // console.log(product_Details)
   const { user } = useSelector((state) => state.auth);
   const { toast } = useToast();
-  const [reviewMsg,setReviewMsg]=useState('')
-  const [ratting ,setRatting]=useState(0)
+  const [reviewMsg, setReviewMsg] = useState('');
+  const [rating, setRating] = useState(0);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
-  // console.log(reviews,"reviews");
-  
-  const handleRatingChange=(getRatting)=>{
-    setRatting(getRatting)
-  }
-  const handleAddReview=()=>{
-    dispatch(addReview({
-    productId:product_Details._id,
-    userId:user.id,
-    userName:user.userName,
-    reviewmessage:reviewMsg,
-    reviewValue:ratting})).then(data=>{
-      if(data.payload.success){
-        setRatting(0)
-        setReviewMsg('')
-       dispatch(getReviews(product_Details._id))
-       toast({
-        title:'Review Added successfully'
-       })
-      }else{
-        toast({
-          title:data.payload.message,
-          variant:'destructive'
-        })
-      }
-      // console.log(data);
-      
-    })
-  }
-  const HandleAddToCart = (getcurrentProductId,getTotalStock) => {
-    // console.log(getcurrentProductId);
-    let getCartItems = cartItems.items || [];
-    if (getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getcurrentProductId
-      );
-      // if(indexOfCurrentItem)
-      if (indexOfCurrentItem > -1) {
-        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if (getQuantity + 1 > getTotalStock) {
-          toast({
-            title: `Only ${getQuantity} quantity can be added`,
-            variant: "destructive",
-          });
-          return
-        }
-      }
+
+  useEffect(() => {
+    if (product_Details) {
+      dispatch(getReviews(product_Details._id));
     }
-    dispatch(
-      addToCart({
-        userId: user.id,
-        productId: getcurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      // console.log(data)
+  }, [product_Details]);
+
+  const handleRatingChange = (newRating) => setRating(newRating);
+
+  const handleAddReview = () => {
+    dispatch(addReview({
+      productId: product_Details._id,
+      userId: user.id,
+      userName: user.userName,
+      reviewmessage: reviewMsg,
+      reviewValue: rating
+    })).then(data => {
       if (data.payload.success) {
-        dispatch(fetchToCart(user.id));
-        toast({
-          title: "Product has been added in cart",
-        });
+        setRating(0);
+        setReviewMsg('');
+        dispatch(getReviews(product_Details._id));
+        toast({ title: 'Review Added Successfully' });
+      } else {
+        toast({ title: data.payload.message, variant: 'destructive' });
       }
     });
   };
-  const handleDialougeClose = () => {
+
+  const handleAddToCart = (productId, totalStock) => {
+    const getCartItems = cartItems.items || [];
+    if (getCartItems.some(item => item.productId === productId && item.quantity + 1 > totalStock)) {
+      toast({ title: "Cannot add more than available stock", variant: "destructive" });
+      return;
+    }
+    dispatch(addToCart({ userId: user.id, productId, quantity: 1 }))
+      .then((data) => {
+        if (data.payload.success) {
+          dispatch(fetchToCart(user.id));
+          toast({ title: "Product added to cart" });
+        }
+      });
+  };
+
+  const handleDialogClose = () => {
     setOpen(false);
     dispatch(setproductDetails());
-    setRatting(0)
-    setReviewMsg('')
+    setRating(0);
+    setReviewMsg('');
   };
-  // console.log(product_Details, 'shopping User');
-   useEffect(()=>{
-      if(product_Details!=null){
-        dispatch(getReviews(product_Details._id))
-      }
-   },[product_Details])
-  //  console.log(reviews,'reviews');
-  const averageReview= reviews && reviews.length>0?
-  reviews.reduce((sum,reviewItem)=>sum+reviewItem.reviewValue,0)/reviews.length:0
-  return (
-    <Dialog open={open} onOpenChange={handleDialougeClose} className='rounded-3xl'>
-   <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[80vw] h-[80vh] sm:h-auto max-h-screen overflow-y-auto rounded-3xl">
 
-  
-        <div className="relative overflow-hidden ">
-          <img
-            src={product_Details?.image}
-            alt={product_Details?.title}
-            width={600}
-            height={600}
-            className="aspect-square w-full object-contain rounded-lg"
-          ></img>
+  const averageReview = reviews.length ? 
+    reviews.reduce((sum, review) => sum + review.reviewValue, 0) / reviews.length 
+    : 0;
+
+  return (
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 sm:p-10 max-w-[70vw] h-auto max-h-[90vh] overflow-y-auto rounded-2xl">
+        {/* Left - Product Image */}
+        <div className="flex justify-center">
+          <img src={product_Details?.image} alt={product_Details?.title} className="w-full max-w-md rounded-lg shadow-lg" />
         </div>
-        <div className="">
-          <div>
-            <h1 className="text-3xl font-extrabold">
-              {product_Details?.title}
-            </h1>
-            <p className="text-muted-foreground lg:text-1xl  text-xl mb-5 mt-3">
-              {product_Details?.description}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p
-              className={`text-3xl font-bold text-primary ${
-                product_Details?.salePrice > 0 ? "line-through" : ""
-              }`}
-            >
-              ${product_Details?.price}
-            </p>
-            {product_Details?.salePrice > 0 ? (
-              <p className="text-2xl font-bold text-muted-foreground">
-                ${product_Details?.salePrice}
-              </p>
-            ) : null}
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex items-center gap-0.5">
-            <Star_ratting rating={averageReview}/>
-              
-            </div>
-            <span className="text-muted-foreground">({averageReview.toFixed(2)})</span>
-          </div>
-          <div className="mt-5 mb-5 w-full">
-            {product_Details?.totalStock === 0 ? (
-              <Button
-                // onClick={() => HandleAddToCart(product_Details._id)}
-                className="w-full opacity-60 cursor-not-allowed"
-              >
-                Out of stock
-              </Button>
-            ) : (
-              <Button
-                onClick={() => HandleAddToCart(product_Details._id,product_Details.totalStock)}
-                className="w-full"
-              >
-                Add to Cart
-              </Button>
+
+        {/* Right - Product Details */}
+        <div className="space-y-4">
+          <h1 className="text-2xl font-bold">{product_Details?.title}</h1>
+          <p className="text-gray-600">{product_Details?.description}</p>
+          <div className="flex items-center gap-3 text-2xl font-semibold text-red-600 justify-between">
+            ${product_Details?.salePrice || product_Details?.price}
+            {product_Details?.salePrice && (
+              <p className="text-gray-500 line-through text-lg">${product_Details?.price}</p>
             )}
-            {/* <Button onClick={()=>HandleAddToCart(product_Details._id)} className="w-full">Add to Cart</Button> */}
           </div>
+          <div className="flex items-center gap-2">
+            <Star_ratting rating={averageReview} />
+            <span className="text-muted-foreground">({averageReview.toFixed(1)})</span>
+          </div>
+
+          {/* Add to Cart Button */}
+          <Button className="w-full bg-black" onClick={() => handleAddToCart(product_Details._id, product_Details.totalStock)} disabled={product_Details?.totalStock <= 0}>
+            {product_Details?.totalStock === 0 ? "Out of Stock" : "Add to Cart"}
+          </Button>
+
           <Separator />
-          <div className="max-h-[300px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Reviews</h2>
-            <div className="grid gap-6">
-            {
-              reviews && reviews.length ?reviews.map(reviewItem=><div className="flex gap-4">
-                <Avatar className="w-10 h-10 border text-white">
-                  <AvatarFallback className=' bg-black'>{reviewItem.userName[0].toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold">{reviewItem.userName}</h3>
+
+          {/* Reviews Section */}
+          <div className="max-h-[250px] overflow-auto scrollbar-hide custom-scrollbar">
+            <h2 className="text-lg font-bold">Reviews</h2>
+            <div className="space-y-3 mt-3">
+              {reviews.length ? (
+                reviews.map(review => (
+                  <div key={review.id} className="p-3 border rounded-lg shadow-sm bg-gray-50 flex gap-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className="bg-gray-800 text-white">
+                        {review.userName[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-bold text-sm">{review.userName}</h3>
+                      <Star_ratting rating={review.reviewValue} />
+                      <p className="text-gray-600 text-sm">{review.reviewmessage}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-0.5">
-                   <Star_ratting rating={reviewItem.reviewValue}></Star_ratting>
-                  </div>
-                  <p className="text-muted-foreground">
-                    {reviewItem.
-                      reviewmessage}
-                  </p>
-                </div>
-              </div>):<h1>No reviews</h1>
-            }
-              
+                ))
+              ) : (
+                <p className="text-gray-500">No reviews yet.</p>
+              )}
             </div>
-            
-            <div className="mt-10 flex gap-2 flex-col">
-            <Label>Write a review</Label>
-            <div className="flex gap-1">
-            <Star_ratting rating={ratting} handleRatingChange={handleRatingChange}/>
-            </div>
-            
-              <Input name='reviewMsg' value={reviewMsg} onChange={(event)=>setReviewMsg(event.target.value)} placeholder="write review" />
-              <Button onClick={handleAddReview} disabled={reviewMsg.trim()===''}>submit</Button>
-            </div>
+          </div>
+
+          {/* Add Review */}
+          <div className="mt-4">
+            <Label className="text-lg font-semibold">Write a Review</Label>
+            <Star_ratting rating={rating} handleRatingChange={handleRatingChange} />
+            <Input value={reviewMsg} onChange={(e) => setReviewMsg(e.target.value)} placeholder="Write your review..." className="mt-2 w-full" />
+            <Button onClick={handleAddReview} disabled={!reviewMsg.trim()} className="mt-2 bg-green-600">Submit</Button>
           </div>
         </div>
       </DialogContent>
@@ -205,4 +143,4 @@ const Product_details_dialog = ({ open, setOpen, product_Details }) => {
   );
 };
 
-export default Product_details_dialog;
+export default ProductDetailsDialog;

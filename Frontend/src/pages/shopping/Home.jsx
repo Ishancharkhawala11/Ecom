@@ -28,7 +28,7 @@ import { addToCart, fetchToCart } from "@/store/Shop/Cartslice";
 import { useToast } from "@/hooks/use-toast";
 import Product_details_dialog from "@/components/shopping/Product_details";
 import { getFeatureImages } from "@/store/common";
-import Footer from "./Footer";
+import Footer from "../../components/shopping/Footer";
 import { CgAdidas } from "react-icons/cg";
 import { SiNike, SiPuma, SiZara } from "react-icons/si";
 import Hm from '../../assets/H&m.png'

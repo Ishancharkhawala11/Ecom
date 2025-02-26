@@ -22,7 +22,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Product_Not_Found from "@/components/shopping/Product_Not_Found";
-import Footer from "./Footer";
+import Footer from "../../components/shopping/Footer";
 
 const ShoppingListing = () => {
   const dispatch = useDispatch();
