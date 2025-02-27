@@ -1,13 +1,39 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "../config";
+import './Scrollbar.css'
 
-const Shopping_Product_tile = ({ product, handleProductDetails, HandleAddToCart }) => {
+const Shopping_Product_tile = ({
+  product,
+  handleProductDetails,
+  HandleAddToCart,
+}) => {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    const cardNode = cardRef.current;
+
+    if (cardNode) {
+      cardNode.classList.add("scale-95", "opacity-0"); // Start with scale 95% and opacity 0
+
+      requestAnimationFrame(() => {
+        cardNode.classList.remove("scale-95", "opacity-0"); // Remove the classes to animate
+        cardNode.classList.add("scale-up"); // Add the scale-up class
+      });
+    }
+  }, []);
+
   return (
-    <Card className="w-full max-w-sm lg:max-w-xl mx-auto flex flex-col justify-between h-[520px]">
-      <div onClick={() => handleProductDetails(product._id)} className="flex flex-col flex-grow">
+    <Card
+      className="w-full max-w-sm lg:max-w-xl mx-auto flex flex-col justify-between h-[520px] transition-all duration-300 scale-up"
+      ref={cardRef}
+    >
+      <div
+        onClick={() => handleProductDetails(product._id)}
+        className="flex flex-col flex-grow"
+      >
         {/* Image Container with Zoom-in Effect */}
         <div className="relative overflow-hidden">
           <img
@@ -44,12 +70,16 @@ const Shopping_Product_tile = ({ product, handleProductDetails, HandleAddToCart 
           </div>
           {/* Price Section */}
           <div className="flex justify-between items-center mb-1">
-            <span className={`${product.salePrice > 0 ? "line-through" : ""} text-lg font-semibold text-primary`}>
+            <span
+              className={`${
+                product.salePrice > 0 ? "line-through" : ""
+              } text-lg font-semibold text-primary`}
+            >
               ${product.price}
             </span>
             {product.salePrice > 0 && (
               <span className="text-lg font-semibold text-primary">
-               ${product.salePrice}
+                ${product.salePrice}
               </span>
             )}
           </div>
@@ -62,7 +92,10 @@ const Shopping_Product_tile = ({ product, handleProductDetails, HandleAddToCart 
             Out of stock
           </Button>
         ) : (
-          <Button onClick={() => HandleAddToCart(product._id, product.totalStock)} className="w-full">
+          <Button
+            onClick={() => HandleAddToCart(product._id, product.totalStock)}
+            className="w-full"
+          >
             Add to cart
           </Button>
         )}

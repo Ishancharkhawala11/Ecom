@@ -106,12 +106,12 @@ const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
           <Separator />
 
           {/* Reviews Section */}
-          <div className="max-h-[250px] overflow-auto scrollbar-hide custom-scrollbar">
+          <div className="max-h-[250px] overflow-auto scrollbar-hide custom-scrollbar bg-slate-200 p-4">
             <h2 className="text-lg font-bold">Reviews</h2>
             <div className="space-y-3 mt-3">
               {reviews.length ? (
                 reviews.map(review => (
-                  <div key={review.id} className="p-3 border rounded-lg shadow-sm bg-gray-50 flex gap-3">
+                  <div key={review.id} className="p-3 border rounded-lg shadow-sm bg-gray-50 flex gap-3 m-2">
                     <Avatar className="w-8 h-8">
                       <AvatarFallback className="bg-gray-800 text-white">
                         {review.userName[0].toUpperCase()}
