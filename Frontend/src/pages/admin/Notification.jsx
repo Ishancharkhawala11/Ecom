@@ -3,13 +3,14 @@ import moment from "moment";
 import { io } from "socket.io-client";
 import { X } from "lucide-react";
 
-const socket = io(import.meta.env.VITE_BACKEND_APIS_ROUTE);
+// const socket = io(import.meta.env.VITE_BACKEND_APIS_ROUTE);
 
 const AdminNotification = () => {
   const [notifications, setNotifications] = useState([]);
   const BASEURL = import.meta.env.VITE_BACKEND_APIS_ROUTE;
 
   useEffect(() => {
+    const socket = io(BASEURL);
     const fetchNotifications = async () => {
       try {
         const response = await fetch(`${BASEURL}/api/admin/notifications`);
@@ -48,6 +49,7 @@ const AdminNotification = () => {
   }, []);
 
   const markAsRead = (id) => {
+    const socket = io(BASEURL);
     socket.emit("markNotificationAsRead", { id });
 
     setNotifications((prevNotifications) =>

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { clearCart } from "@/store/Shop/Cartslice/index";
 import { io } from 'socket.io-client';
-const socket=io(import.meta.env.VITE_BACKEND_APIS_ROUTE)
+
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { mailSending } = useSelector((state) => state.shopOrder); 
@@ -16,6 +16,7 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
+    const socket=io(import.meta.env.VITE_BACKEND_APIS_ROUTE)
     const orderId = localStorage.getItem('orderId');
 // const dispatch=useDispatch()
     if (orderId && user?.email) {

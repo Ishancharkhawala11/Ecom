@@ -6,13 +6,14 @@ import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const socket = io(import.meta.env.VITE_BACKEND_APIS_ROUTE);
+
 
 const AdminHeader = ({ setOpen }) => {
   const dispatch = useDispatch();
   const [notificationCount, setNotificationCount] = useState(0);
   const BASEURL = import.meta.env.VITE_BACKEND_APIS_ROUTE;
   useEffect(() => {
+    const socket = io(import.meta.env.VITE_BACKEND_APIS_ROUTE);
     const fetchNotifications = async () => {
       try {
         const response = await fetch(`${BASEURL}/api/admin/notifications`);

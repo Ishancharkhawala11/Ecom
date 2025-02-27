@@ -80,7 +80,7 @@ const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
       <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 sm:p-10 max-w-[70vw] h-auto max-h-[90vh] overflow-y-auto rounded-2xl">
         {/* Left - Product Image */}
         <div className="flex justify-center">
-          <img src={product_Details?.image} alt={product_Details?.title} className="w-full max-w-md rounded-lg shadow-lg" />
+          <img src={product_Details?.image} alt={product_Details?.title} className="w-full lg:h-[580px] sm:h-[400px]  max-w-md rounded-lg  shadow-lg" />
         </div>
 
         {/* Right - Product Details */}
@@ -133,7 +133,8 @@ const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
           {/* Add Review */}
           <div className="mt-4">
             <Label className="text-lg font-semibold">Write a Review</Label>
-            <Star_ratting rating={rating} handleRatingChange={handleRatingChange} />
+            <div className="mt-2"> <Star_ratting rating={rating} handleRatingChange={handleRatingChange} /></div>
+           
             <Input value={reviewMsg} onChange={(e) => setReviewMsg(e.target.value)} placeholder="Write your review..." className="mt-2 w-full" />
             <Button onClick={handleAddReview} disabled={!reviewMsg.trim()} className="mt-2 bg-green-600">Submit</Button>
           </div>
