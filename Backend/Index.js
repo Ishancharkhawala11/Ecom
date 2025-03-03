@@ -21,7 +21,7 @@ const server=http.createServer(app)
 initializeSocket(server)
 
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: "https://ecommerce-amber-alpha-12.vercel.app/", 
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
     credentials: true,
