@@ -2,11 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const http = require("http");
-require("dotenv").config();
-
-// Importing Routes
-const authRouter = require("./routes/auth/auth_routes");
+const authRouter = require("./routes/auth/auth_routes"); 
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
 const shopCartRouter = require("./routes/Shop/Cart");
@@ -17,19 +13,20 @@ const shopSearchRouter = require("./routes/Shop/Seach_routes");
 const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
-const { initializeSocket } = require("./controllers/admin/Notification");
-
-// Initialize Express
 const app = express();
-const server = http.createServer(app);
+const http = require("http");
+const { initializeSocket } = require("./controllers/admin/Notification");
+require("dotenv").config();
 
-// Allowed Origins
+const server = http.createServer(app);
+initializeSocket(server);
+
 const allowedOrigins = [
   "https://ecom-tau-virid.vercel.app",
-  "http://localhost:5173", // Keep for local testing
+  "http://localhost:5173" // Keep for local testing
 ];
 
-// **CORS Middleware (Fix)**
+// CORS Middleware
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -38,35 +35,32 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Expires", "Pragma"],
   credentials: true,
 }));
 
-// **Handle Preflight Requests**
+// Handle Preflight Requests
+app.options("*", cors());
+
+// CORS Headers for All Routes
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://ecom-tau-virid.vercel.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
   next();
 });
 
-// Middleware
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json()); 
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
-// Routes
+// Define Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -79,9 +73,5 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// Initialize Socket for Notifications
-initializeSocket(server);
-
-// Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
