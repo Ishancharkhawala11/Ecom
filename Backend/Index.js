@@ -20,11 +20,22 @@ require('dotenv').config()
 const server=http.createServer(app)
 initializeSocket(server)
 
+const allowedOrigins = [
+  "https://ecommerce-amber-alpha-12.vercel.app",
+  "http://localhost:5173", // Keep for local testing
+];
+
 app.use(cors({
-    origin: "https://ecommerce-amber-alpha-12.vercel.app", 
-    methods: ['GET', 'POST', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
-    credentials: true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
+  credentials: true,
 }));
 
 
