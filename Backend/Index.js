@@ -13,17 +13,29 @@ const server = http.createServer(app);
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log(error));
+  .catch((error) => console.log("MongoDB connection error:", error));
 
 // Middleware
 app.use(cors({
-  origin: ['https://ecom-eight-xi.vercel.app'], // Allow requests from this specific origin
-  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'], // Include OPTIONS for preflight requests
+  origin: ['https://ecom-eight-xi.vercel.app', 'https://ecom-6105.onrender.com'], // Allow multiple origins
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser());
+
+// Global CORS Fix (for any missing headers)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://ecom-eight-xi.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Define Routes
 const authRouter = require("./routes/auth/auth_routes");
@@ -38,6 +50,7 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
+// API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -49,6 +62,11 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
+
+// Test Route for Debugging
+app.get("/api/auth/check-auth", (req, res) => {
+  res.json({ message: "Auth check works!" });
+});
 
 // Initialize Socket for Notifications
 initializeSocket(server);
