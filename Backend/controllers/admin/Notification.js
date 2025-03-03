@@ -4,7 +4,7 @@ const Notification = require("../../models/Notification");
 const initializeSocket = (server) => {
     const io = new Server(server, {
       cors: {
-        origin: "https://ecom-eight-xi.vercel.app/",
+        origin: "https://ecom-eight-xi.vercel.app",
         methods: ["GET", "POST"],
       },
     });

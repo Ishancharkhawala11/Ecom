@@ -22,7 +22,7 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 const allowedOrigins = [
-  "https://ecom-eight-xi.vercel.app/",
+  "https://ecom-eight-xi.vercel.app",
   "http://localhost:5173", 
 ];
 
