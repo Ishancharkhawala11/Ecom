@@ -62,10 +62,10 @@ initializeSocket(server);
 // app.use(cookieParser());
 // app.use(express.json());
 app.use(cors({
-  origin: "https://ecom-eight-xi.vercel.app",
+  origin: "*",
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
-  credentials: true,
+  // allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
+  // credentials: true,
 }));
 
 // Connect to MongoDB
