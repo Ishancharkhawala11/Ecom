@@ -80,7 +80,7 @@ const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
       <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 sm:p-10 max-w-[70vw] h-auto max-h-[90vh] overflow-y-auto rounded-2xl">
         {/* Left - Product Image */}
         <div className="flex justify-center">
-          <img src={product_Details?.image} alt={product_Details?.title} className="w-full lg:h-[580px] sm:h-[400px]  max-w-md rounded-lg  shadow-lg" />
+          <img src={product_Details?.image} alt={product_Details?.title} className="w-full lg:h-[580px] md:h-[400px]  max-w-md rounded-lg  shadow-lg" />
         </div>
 
         {/* Right - Product Details */}

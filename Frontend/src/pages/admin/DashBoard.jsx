@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import { Loader } from "lucide-react";
-import "./ProductImageUpload.css"; // Import custom CSS for scrollbar
+// import "./ProductImageUpload.css"; 
 
 const AdminDashBoard = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -36,6 +36,7 @@ const AdminDashBoard = () => {
 
   return (
     <div>
+      {/* Image Upload Component */}
       <Product_image_upload
         imageFile={imageFile}
         setImageFile={setImageFile}
@@ -45,6 +46,8 @@ const AdminDashBoard = () => {
         imageLoading={imageLoading}
         isCustomStyling={true}
       />
+
+      {/* Upload Button */}
       <Button 
         disabled={!uploadedImageUrl || isUploading} 
         onClick={handleUploadFeatureImage} 
@@ -60,12 +63,16 @@ const AdminDashBoard = () => {
         )}
       </Button>
 
-      {/* Scrolling feature added here with custom scrollbar class */}
-      <div className="mt-10 lg:max-h-[400px] lg:overflow-y-auto overflow-auto border rounded-lg p-4 custom-scrollbar">
+      {/* Scrollable Image List with Custom Scrollbar */}
+      <div className="mt-10 max-h-[400px] overflow-y-auto border rounded-lg p-4">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map(featureImage => (
               <div key={featureImage._id} className='border relative rounded-lg overflow-hidden mb-5'>
-                <img src={featureImage.image} className='w-full h-[500px] object-fill rounded-t-lg' />
+                <img 
+                  src={featureImage.image} 
+                  className='w-full h-[500px] object-fill rounded-t-lg' 
+                  alt="Feature"
+                />
                 <Button
                   className='absolute top-2 right-2 bg-black text-white'
                   onClick={() => handleDeleteImage(featureImage._id)}

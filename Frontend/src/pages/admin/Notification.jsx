@@ -60,6 +60,7 @@ const AdminNotification = () => {
   };
 
   const deleteNotification = (id) => {
+    const socket = io(BASEURL);
     socket.emit("deleteNotification", { id });
 
     // Optimistically remove from UI

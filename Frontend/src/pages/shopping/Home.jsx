@@ -31,7 +31,7 @@ import { getFeatureImages } from "@/store/common";
 import Footer from "../../components/shopping/Footer";
 import { CgAdidas } from "react-icons/cg";
 import { SiNike, SiPuma, SiZara } from "react-icons/si";
-import Hm from '../../assets/H&m.png'
+import Hm from '../../assets/hm.png'
 import levis from '../../assets/levis.png'
 import Shoes from '../../assets/shoes.png'
 import Women from '../../assets/women.png'

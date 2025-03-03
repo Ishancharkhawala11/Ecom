@@ -13,6 +13,9 @@ const Paypal_return = () => {
   const {user}=useSelector(state=>state.auth)
   useEffect(() => {
     if (payerId && paymentId) {
+      
+      console.log(paymentId);
+      
       const orderId = JSON.parse(
         sessionStorage.getItem("current_order_id")
       );
@@ -20,7 +23,10 @@ const Paypal_return = () => {
         if(data.payload.success){
           sessionStorage.removeItem("current_order_id")
           localStorage.setItem('orderId',orderId)
-          window.location.href='/shop/payment-success'
+          setTimeout(() => {
+            window.location.href='/shop/payment-success'
+          }, 7000);
+          // window.location.href='/shop/payment-success'
         }
       })
       //  console.log(getCurrentOrderId,'id');
