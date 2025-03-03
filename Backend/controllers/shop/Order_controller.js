@@ -6,7 +6,8 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
-const User=require('../../models/User')
+const User=require('../../models/User');
+const { log } = require("console");
 require('dotenv').config()
 const createOrder = async (req, res) => {
   try {
@@ -41,7 +42,8 @@ const createOrder = async (req, res) => {
     });
 
     await newOrder.save();
-
+    console.log(process.env.RETURN_URL);
+    
     if (paymentMethod === "cod") {
       for (let item of cartItems) {
         let product = await Product.findById(item.productId);
