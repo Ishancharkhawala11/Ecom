@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "../config";
-import './Scrollbar.css'
+import './ScrollBar.css'
 
 const Shopping_Product_tile = ({
   product,
