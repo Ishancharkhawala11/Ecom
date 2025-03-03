@@ -21,8 +21,8 @@ const server=http.createServer(app)
 initializeSocket(server)
 
 const allowedOrigins = [
-  "https://ecommerce-amber-alpha-12.vercel.app",
-  "http://localhost:5173", // Keep for local testing
+  "https://ecom-1-sn77.onrender.com",
+  "http://localhost:5173", 
 ];
 
 app.use(cors({
