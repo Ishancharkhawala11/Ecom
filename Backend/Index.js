@@ -17,8 +17,8 @@ mongoose
 
 // Middleware
 app.use(cors({
-  origin: "*",
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  origin: ['https://ecom-eight-xi.vercel.app'], // Allow requests from this specific origin
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'], // Include OPTIONS for preflight requests
   allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Expires', 'Pragma'],
   credentials: true,
 }));
