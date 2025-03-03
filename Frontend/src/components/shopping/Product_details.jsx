@@ -11,7 +11,7 @@ import { setproductDetails } from "@/store/Shop/Product_slice";
 import { Label } from "../ui/label";
 import Star_ratting from "../common/Star_ratting";
 import { addReview, getReviews } from "@/store/Shop/Review_slice";
-import './Scrollbar.css'
+import './ScrollBar.css';
 
 const ProductDetailsDialog = ({ open, setOpen, product_Details }) => {
   const dispatch = useDispatch();
