@@ -22,8 +22,8 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 const allowedOrigins = [
-  "https://ecom-tau-virid.vercel.app",
-  "http://localhost:5173" // Keep for local testing
+  "https://ecom-eight-xi.vercel.app/",
+  "http://localhost:5173", 
 ];
 
 // CORS Middleware
