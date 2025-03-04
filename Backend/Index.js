@@ -2,17 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
+dotenv.config();
 const app = express();
 const http = require("http");
 const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-// Allowed origins
+// Allowed origins for CORS
 const allowedOrigins = [
-  "https://ecom-one-liart.vercel.app", // Your production frontend domain
+  "https://ecom-one-liart.vercel.app", // Production frontend domain
   "http://localhost:3000",
   "http://localhost:5173"
 ];
@@ -28,8 +29,6 @@ app.use(
   cors({
     origin: function (origin, callback) {
       console.log("CORS Request Origin:", origin);
-
-      // Allow requests from allowed origins and requests with no origin (e.g., Postman, mobile apps)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -46,7 +45,6 @@ app.use(
 // Handle Preflight Requests (OPTIONS)
 app.options("*", (req, res) => {
   const origin = req.headers.origin;
-
   if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -60,6 +58,11 @@ app.options("*", (req, res) => {
 
 app.use(cookieParser());
 app.use(express.json());
+
+// Simple route to check if the API is running
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 // Importing Routes
 const authRouter = require("./routes/auth/auth_routes");
@@ -89,9 +92,14 @@ app.use("/api/admin", notification);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB error:", error));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: err.message });
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
