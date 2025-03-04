@@ -10,24 +10,30 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
+// Allowed origins
 const allowedOrigins = [
-  "https://ecom-one-liart.vercel.app",
+  "https://ecom-one-liart.vercel.app", // Your production frontend domain
   "http://localhost:3000",
   "http://localhost:5173"
 ];
 
+// Middleware to log incoming requests
 app.use((req, res, next) => {
-  console.log("Request Origin:", req.headers.origin);
+  console.log("Incoming Request Origin:", req.headers.origin);
   next();
 });
 
+// CORS Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
+      console.log("CORS Request Origin:", origin);
+
+      // Allow requests from allowed origins and requests with no origin (e.g., Postman, mobile apps)
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin); // Return the exact origin
+        callback(null, true);
       } else {
-        console.error("Blocked by CORS:", origin);
+        console.warn("CORS Blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -40,18 +46,22 @@ app.use(
 // Handle Preflight Requests (OPTIONS)
 app.options("*", (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
+
+  if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.sendStatus(204);
+  } else {
+    res.status(403).json({ message: "CORS Policy Violation" });
   }
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204);
 });
 
 app.use(cookieParser());
 app.use(express.json());
 
+// Importing Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -64,6 +74,7 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
+// Using Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -76,10 +87,12 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB error:", error));
 
+// Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
