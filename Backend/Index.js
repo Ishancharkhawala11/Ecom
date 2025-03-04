@@ -25,7 +25,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+        callback(null, origin); // Return the exact origin
       } else {
         console.error("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
@@ -39,7 +39,10 @@ app.use(
 
 // Handle Preflight Requests (OPTIONS)
 app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
   res.header("Access-Control-Allow-Credentials", "true");
