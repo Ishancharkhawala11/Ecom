@@ -21,7 +21,7 @@ const server=http.createServer(app)
 initializeSocket(server)
 
 const allowedOrigins = [
-  "https://ecommerce-amber-alpha-12.vercel.app",
+  "https://ecom-eight-xi.vercel.app",
   "http://localhost:5173", // Keep for local testing
 ];
 
