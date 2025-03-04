@@ -2,6 +2,54 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+require("dotenv").config();
+
+const app = express();
+const http = require("http");
+const { initializeSocket } = require("./controllers/admin/Notification");
+const server = http.createServer(app);
+initializeSocket(server);
+
+// ✅ CORS Configuration (Ensures Frontend Access)
+const allowedOrigin = "https://ecom-eight-xi.vercel.app"; // Frontend URL
+
+app.use(
+  cors({
+    origin: allowedOrigin, // Allow frontend requests
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow cookies and authentication headers
+  })
+);
+
+// ✅ Handle Preflight Requests (OPTIONS)
+app.options("*", cors()); // Ensures all preflight requests are handled
+
+// ✅ Middleware to Explicitly Set CORS Headers
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
+// ✅ Debugging Logs for Incoming Requests
+app.use((req, res, next) => {
+  console.log("Incoming Request Origin:", req.headers.origin);
+  next();
+});
+
+// 🛠 Middleware Setup
+app.use(cookieParser());
+app.use(express.json());
+
+// 🛠 Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -14,51 +62,7 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
-const app = express();
-const http = require("http");
-const { initializeSocket } = require("./controllers/admin/Notification");
-require("dotenv").config();
-const server = http.createServer(app);
-initializeSocket(server);
-
-// ✅ CORS Configuration (Final Fix)
-app.use(
-  cors({
-    origin: "https://ecom-eight-xi.vercel.app", // Your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // Allows cookies & authentication headers
-  })
-);
-
-// ✅ Handle Preflight Requests (OPTIONS)
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://ecom-eight-xi.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204); // Preflight request successful
-  }
-
-  next();
-});
-
-// ✅ Debugging Log for Incoming Requests
-app.use((req, res, next) => {
-  console.log("Incoming Request Origin:", req.headers.origin);
-  next();
-});
-
-app.use(cookieParser());
-app.use(express.json());
-
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((error) => console.log("❌ MongoDB connection error:", error));
-
+// ✅ Route Setup
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -71,5 +75,12 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
+// ✅ MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((error) => console.log("❌ MongoDB error:", error));
+
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
