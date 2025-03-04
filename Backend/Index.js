@@ -16,11 +16,15 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      console.log("Incoming request from origin:", origin);
-      if (!origin || allowedOrigins.includes(origin) || origin === "null") {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         console.error("Blocked by CORS:", origin);
@@ -33,25 +37,12 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  const requestOrigin = req.headers.origin;
-  if (allowedOrigins.includes(requestOrigin)) {
-    res.header("Access-Control-Allow-Origin", requestOrigin);
-  }
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
-
-app.use((req, res, next) => {
-  console.log("Incoming Request Origin:", req.headers.origin);
-  next();
+  res.sendStatus(204);
 });
 
 app.use(cookieParser());
