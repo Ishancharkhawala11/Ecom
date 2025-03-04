@@ -11,7 +11,7 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 // ✅ CORS Configuration (Ensures Frontend Access)
-const allowedOrigin = "https://ecom-eight-xi.vercel.app"; // Frontend URL
+const allowedOrigin = "https://ecom-six-lime.vercel.app"; // Frontend URL
 
 app.use(
   cors({
