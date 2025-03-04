@@ -10,11 +10,8 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-const allowedOrigins = [
-  "https://ecom-one-liart.vercel.app",
-  "http://localhost:3000",
-  "http://localhost:5173"
-];
+// Allowed Origins
+const allowedOrigins = ["http://localhost:5173"];
 
 app.use((req, res, next) => {
   console.log("Request Origin:", req.headers.origin);
@@ -32,15 +29,16 @@ app.use(
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"],
     credentials: true,
   })
 );
 
+// Handle Preflight Requests (OPTIONS)
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin);
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
   res.header("Access-Control-Allow-Credentials", "true");
   res.sendStatus(204);
 });
@@ -48,6 +46,7 @@ app.options("*", (req, res) => {
 app.use(cookieParser());
 app.use(express.json());
 
+// Import Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -60,6 +59,7 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
+// Use Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -72,10 +72,12 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
+// Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.mongo_url)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB error:", error));
 
+// Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
