@@ -21,34 +21,33 @@ require("dotenv").config();
 const server = http.createServer(app);
 initializeSocket(server);
 
-// ✅ Updated CORS Configuration
-const allowedOrigins = [
-  "https://ecom-eight-xi.vercel.app",
-  "http://localhost:5173", // Keep for local testing
-];
-
+// ✅ CORS Configuration (Final Fix)
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    origin: "https://ecom-eight-xi.vercel.app", // Your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: true, // Allows cookies & authentication headers
   })
 );
 
-// ✅ Ensure CORS Headers Are Sent
+// ✅ Handle Preflight Requests (OPTIONS)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://ecom-eight-xi.vercel.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204); // Preflight request successful
+  }
+
+  next();
+});
+
+// ✅ Debugging Log for Incoming Requests
+app.use((req, res, next) => {
+  console.log("Incoming Request Origin:", req.headers.origin);
   next();
 });
 
@@ -57,8 +56,8 @@ app.use(express.json());
 
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log("MongoDB connection error:", error));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((error) => console.log("❌ MongoDB connection error:", error));
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
@@ -73,4 +72,4 @@ app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}`));
