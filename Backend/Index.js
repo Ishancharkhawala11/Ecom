@@ -10,24 +10,28 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-// ✅ CORS Configuration (Ensures Frontend Access)
-const allowedOrigin = "https://ecom-one-liart.vercel.app"; // Frontend URL
+const allowedOrigins = [
+  "https://ecom-one-liart.vercel.app",
+  "http://localhost:5173",
+];
 
 app.use(
   cors({
-    origin: allowedOrigin, // Allow frontend requests
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // Allow cookies and authentication headers
+    credentials: true,
   })
 );
 
-// ✅ Handle Preflight Requests (OPTIONS)
-app.options("*", cors()); // Ensures all preflight requests are handled
-
-// ✅ Middleware to Explicitly Set CORS Headers
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
+  res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
@@ -39,17 +43,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Debugging Logs for Incoming Requests
 app.use((req, res, next) => {
   console.log("Incoming Request Origin:", req.headers.origin);
   next();
 });
 
-// 🛠 Middleware Setup
 app.use(cookieParser());
 app.use(express.json());
 
-// 🛠 Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -62,7 +63,6 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
-// ✅ Route Setup
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -75,12 +75,10 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// ✅ MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((error) => console.log("❌ MongoDB error:", error));
+  .then(() => console.log("MongoDB connected"))
+  .catch((error) => console.log("MongoDB error:", error));
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
