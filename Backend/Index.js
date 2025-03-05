@@ -11,64 +11,38 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-// Allowed Origins
+// Allowed Origins (Only these 3)
 const allowedOrigins = [
   "https://ecom-zeta-plum.vercel.app",
   "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
-  "https://ecom-ishans-projects-75140e8b.vercel.app", // Add your frontend domain
-
-   // Local development
+  "https://ecom-ishans-projects-75140e8b.vercel.app"
 ];
 
-// Middleware to log incoming requests
+// CORS Middleware (Handles Preflight Requests)
 app.use((req, res, next) => {
-  console.log("Incoming Request Origin:", req.headers.origin);
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204); // Handle preflight requests
+  }
+
   next();
 });
 
-// CORS Middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      console.log("CORS Request Origin:", origin);
-      if (!origin || allowedOrigins.includes(origin)) {
-        console.log("CORS Allowed for Origin:", origin);
-        callback(null, true);
-      } else {
-        console.warn("CORS Blocked:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"],
-    credentials: true,
-  })
-);
-
-// Handle Preflight Requests (OPTIONS)
-app.options("https://ecom-zeta-plum.vercel.app", (req, res) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.sendStatus(204);
-  } else {
-    res.status(403).json({ message: "CORS Policy Violation" });
-  }
-});
-
-// Other Middleware
+// Middleware
 app.use(cookieParser());
 app.use(express.json());
 
+// Routes
+app.get("/", (req, res) => res.send("API is running..."));
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
-// Importing Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -94,17 +68,18 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// Connect to MongoDB
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log("MongoDB error:", error));
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((error) => console.log("❌ MongoDB Error:", error));
 
-// Error handling middleware
+// Error Handling Middleware
 app.use((err, req, res, next) => {
+  console.error("❌ Error:", err.message);
   res.status(500).json({ message: err.message });
 });
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
