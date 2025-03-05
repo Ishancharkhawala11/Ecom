@@ -46,7 +46,7 @@ app.use(
 );
 
 // Handle Preflight Requests (OPTIONS)
-app.options("*", (req, res) => {
+app.options("https://ecom-zeta-plum.vercel.app", (req, res) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
