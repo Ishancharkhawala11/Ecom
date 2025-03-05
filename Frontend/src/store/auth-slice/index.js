@@ -77,7 +77,7 @@ export const checkAuth = createAsyncThunk(
     const response = await fetch(`${BASEURL}/api/auth/check-auth`, {
       method: "GET",
       headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Content-Type": "application/json" // Avoid unnecessary headers
       },
       credentials: "include", // Equivalent to 'withCredentials: true' in axios
     });
