@@ -8,13 +8,31 @@
     {
       "src": "Frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+      "config": { "distDir": "Frontend/build" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/Backend/Index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/Frontend/build/index.html"
     }
   ],
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/Backend/Index.js"
+    },
+    {
+      "source": "/shop/(.*)",
+      "destination": "/Frontend/build/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/Frontend/build/index.html"
     },
     {
       "source": "/(.*)",
@@ -29,6 +47,12 @@
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS, PATCH, DELETE, POST, PUT" },
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Cache-Control" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
