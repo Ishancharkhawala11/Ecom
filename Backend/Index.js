@@ -11,12 +11,12 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-
 const allowedOrigins = [
-  "https://ecom-beryl-nine.vercel.app", // Production frontend domain
-  
+  "https://ecom-sigma-tan.vercel.app", // Production frontend domain
+  "https://ecom-ishans-projects-75140e8b.vercel.app/",
+  "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
   "http://localhost:5173"
-]
+];
 
 // Middleware to log incoming requests
 app.use((req, res, next) => {
@@ -42,7 +42,7 @@ app.use(
   })
 );
 
-// Handle Preflight Requests (OPTIONS)
+// Restrict OPTIONS method to only the allowed origins
 app.options("*", (req, res) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
@@ -52,6 +52,7 @@ app.options("*", (req, res) => {
     res.header("Access-Control-Allow-Credentials", "true");
     res.sendStatus(204);
   } else {
+    console.warn("CORS Blocked:", origin);
     res.status(403).json({ message: "CORS Policy Violation" });
   }
 });
