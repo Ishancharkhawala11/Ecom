@@ -13,7 +13,7 @@ initializeSocket(server);
 
 const allowedOrigins = [
   "https://ecom-sigma-tan.vercel.app", // Production frontend domain
-  "https://ecom-ishans-projects-75140e8b.vercel.app/",
+  "https://ecom-ishans-projects-75140e8b.vercel.app",
   "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
   "http://localhost:5173"
 ];
