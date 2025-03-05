@@ -11,28 +11,42 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-// Allowed Origins (Only these 3)
+// Allowed Origins
 const allowedOrigins = [
   "https://ecom-zeta-plum.vercel.app",
   "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
   "https://ecom-ishans-projects-75140e8b.vercel.app"
 ];
 
-// CORS Middleware (Handles Preflight Requests)
+// CORS Middleware
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      console.log("CORS Request Origin:", origin);
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        console.log("CORS Allowed:", origin);
+        callback(null, true);
+      } else {
+        console.warn("CORS Blocked:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  })
+);
+
+// Handle Preflight Requests
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-  }
-
   if (req.method === "OPTIONS") {
-    return res.sendStatus(204); // Handle preflight requests
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(204);
   }
-
   next();
 });
 
@@ -68,18 +82,18 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// MongoDB Connection
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((error) => console.log("❌ MongoDB Error:", error));
+  .then(() => console.log("MongoDB Connected"))
+  .catch((error) => console.log("MongoDB Error:", error));
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.message);
+  console.error("Error:", err.message);
   res.status(500).json({ message: err.message });
 });
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
