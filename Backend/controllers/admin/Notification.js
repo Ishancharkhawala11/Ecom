@@ -6,8 +6,9 @@ const initializeSocket = (server) => {
       cors: {
         origin:  [
           "https://ecom-zeta-plum.vercel.app",
-          "https://ecom-h3wphgltm-ishans-projects-75140e8b.vercel.app",
-          // Local development
+          "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
+          "https://ecom-ishans-projects-75140e8b.vercel.app"
+          // Local developmen
         ],
         methods: ["GET", "POST"],
       },

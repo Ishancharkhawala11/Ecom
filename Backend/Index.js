@@ -14,6 +14,7 @@ initializeSocket(server);
 // Allowed Origins
 const allowedOrigins = [
   "https://ecom-zeta-plum.vercel.app",
+  "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
   "https://ecom-ishans-projects-75140e8b.vercel.app", // Add your frontend domain
 
    // Local development
