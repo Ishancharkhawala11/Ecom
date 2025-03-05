@@ -11,12 +11,13 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-
+// Allowed Origins
 const allowedOrigins = [
+  "https://ecom-zeta-plum.vercel.app",
+  "https://ecom-ishans-projects-75140e8b.vercel.app", // Add your frontend domain
   "https://ecom-git-main-ishans-projects-75140e8b.vercel.app", // Production frontend domain
-  
-  "http://localhost:5173"
-]
+  "http://localhost:5173", // Local development
+];
 
 // Middleware to log incoming requests
 app.use((req, res, next) => {
@@ -30,6 +31,7 @@ app.use(
     origin: function (origin, callback) {
       console.log("CORS Request Origin:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
+        console.log("CORS Allowed for Origin:", origin);
         callback(null, true);
       } else {
         console.warn("CORS Blocked:", origin);
@@ -56,10 +58,11 @@ app.options("*", (req, res) => {
   }
 });
 
+// Other Middleware
 app.use(cookieParser());
 app.use(express.json());
 
-// Simple route to check if the API is running
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
