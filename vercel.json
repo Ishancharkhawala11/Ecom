@@ -2,11 +2,11 @@
     "version": 2,
     "builds": [
       {
-        "src": "backend/index.js",
+        "src": "Backend/Index.js",
         "use": "@vercel/node"
       },
       {
-        "src": "frontend/package.json",
+        "src": "Frontend/package.json",
         "use": "@vercel/static-build",
         "config": { "distDir": "build" }
       }
@@ -14,11 +14,31 @@
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "backend/index.js"
+        "dest": "Backend/Index.js"
       },
       {
         "src": "/(.*)",
-        "dest": "frontend/build/$1"
+        "dest": "Frontend/build/$1"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/api/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Credentials", "value": "true" },
+          { "key": "Access-Control-Allow-Origin", "value": "https://ecom-zeta-plum.vercel.app" },
+          { "key": "Access-Control-Allow-Origin", "value": "https://ecom-git-main-ishans-projects-75140e8b.vercel.app" },
+          { "key": "Access-Control-Allow-Origin", "value": "https://ecom-ishans-projects-75140e8b.vercel.app" },
+          { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+          { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
+          { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }
+        ]
+      },
+      {
+        "source": "/(.*)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
       }
     ]
   }
