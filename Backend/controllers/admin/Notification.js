@@ -5,10 +5,11 @@ const initializeSocket = (server) => {
     const io = new Server(server, {
       cors: {
         origin:  [
-          "https://ecom-two-murex.vercel.app", // Production frontend domain
+          "https://ecom-beta-taupe.vercel.app",
           "https://ecom-ishans-projects-75140e8b.vercel.app",
           "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
-          "http://localhost:5173"
+          "http://localhost:5173",
+          
         ],
         methods: ["GET", "POST"],
       },

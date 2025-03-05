@@ -12,11 +12,11 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 initializeSocket(server);
 
 const allowedOrigins = [
-  "https://ecom-two-murex.vercel.app",
+  "https://ecom-beta-taupe.vercel.app",
   "https://ecom-ishans-projects-75140e8b.vercel.app",
   "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
   "http://localhost:5173",
-  "https://ecom-6105.onrender.com" // Added Render domain
+  
 ];
 
 // Middleware to log incoming requests

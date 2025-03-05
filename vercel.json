@@ -22,7 +22,7 @@
         "source": "/api/(.*)",
         "headers": [
           { "key": "Access-Control-Allow-Credentials", "value": "true" },
-          { "key": "Access-Control-Allow-Origin", "value": "https://ecom-two-murex.vercel.app" },
+          { "key": "Access-Control-Allow-Origin", "value": "https://ecom-beta-taupe.vercel.app" },
           { "key": "Access-Control-Allow-Origin", "value": "https://ecom-ishans-projects-75140e8b.vercel.app" },
           { "key": "Access-Control-Allow-Origin", "value": "https://ecom-git-main-ishans-projects-75140e8b.vercel.app" },
           { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
