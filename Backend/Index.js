@@ -13,9 +13,9 @@ initializeSocket(server);
 
 // Allowed Origins
 const allowedOrigins = [
-  "https://ecom-zeta-plum.vercel.app",
-  "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
-  "https://ecom-ishans-projects-75140e8b.vercel.app"
+  "ecom-sigma-tan.vercel.app",
+  "https://ecom-ishans-projects-75140e8b.vercel.app",
+  "https://ecom-git-main-ishans-projects-75140e8b.vercel.app"
 ];
 
 // CORS Middleware
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Accesapps-Control-Allow-Credentials", "true");
     return res.sendStatus(204);
   }
   next();
