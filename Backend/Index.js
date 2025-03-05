@@ -27,18 +27,20 @@ app.use((req, res, next) => {
 // CORS Middleware
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       console.log("CORS Request Origin:", origin);
+
       if (!origin || allowedOrigins.includes(origin)) {
+        console.log("CORS Allowed:", origin);
         callback(null, true);
       } else {
         console.warn("CORS Blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"],
     credentials: true,
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   })
 );
 
@@ -55,17 +57,16 @@ app.options("*", (req, res) => {
     console.warn("CORS Blocked:", origin);
     res.status(403).json({ message: "CORS Policy Violation" });
   }
+  next();
 });
 
+// Middleware
 app.use(cookieParser());
 app.use(express.json());
 
-// Simple route to check if the API is running
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+// Routes
+app.get("/", (req, res) => res.send("API is running..."));
 
-// Importing Routes
 const authRouter = require("./routes/auth/auth_routes");
 const adminProductsRouter = require("./routes/admin/product_route");
 const shopProducts = require("./routes/Shop/products_routes");
@@ -94,11 +95,12 @@ app.use("/api/admin", notification);
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log("MongoDB error:", error));
+  .then(() => console.log("MongoDB Connected"))
+  .catch((error) => console.log("MongoDB Error:", error));
 
-// Error handling middleware
+// Error Handling Middleware
 app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
   res.status(500).json({ message: err.message });
 });
 
