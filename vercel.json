@@ -8,28 +8,28 @@
     {
       "src": "Frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "Frontend/build" }
+      "config": { "distDir": "Frontend/dist" }
     }
   ],
-  
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/Backend/Index.js"
     },
     {
-      "source": "/shop/(.*)",
-      "destination": "/Frontend/build/index.html"
+      "source": "/shop/:path*",
+      "destination": "/Frontend/dist/index.html"
     },
     {
-      "source": "/admin/(.*)",
-      "destination": "/Frontend/build/index.html"
+      "source": "/admin/:path*",
+      "destination": "/Frontend/dist/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/Frontend/build/index.html"
+      "source": "/:path*",
+      "destination": "/Frontend/dist/index.html"
     }
-  ],
+  ]
+,
   "headers": [
     {
       "source": "/api/(.*)",
