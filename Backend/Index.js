@@ -3,19 +3,20 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const http = require("http");
 
 dotenv.config();
 const app = express();
-const http = require("http");
-const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
+const { initializeSocket } = require("./controllers/admin/Notification");
 initializeSocket(server);
 
 const allowedOrigins = [
-  "https://ecom-two-murex.vercel.app", // Production frontend domain
-          "https://ecom-ishans-projects-75140e8b.vercel.app",
-          "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
-          "http://localhost:5173"
+  "https://ecom-two-murex.vercel.app",
+  "https://ecom-ishans-projects-75140e8b.vercel.app",
+  "https://ecom-git-main-ishans-projects-75140e8b.vercel.app",
+  "http://localhost:5173",
+  "https://ecom-6105.onrender.com" // Added Render domain
 ];
 
 // Middleware to log incoming requests
@@ -29,7 +30,6 @@ app.use(
   cors({
     origin: (origin, callback) => {
       console.log("CORS Request Origin:", origin);
-
       if (!origin || allowedOrigins.includes(origin)) {
         console.log("CORS Allowed:", origin);
         callback(null, true);
@@ -44,20 +44,17 @@ app.use(
   })
 );
 
-// Restrict OPTIONS method to only the allowed origins
+// Properly handle OPTIONS preflight requests
 app.options("*", (req, res) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.sendStatus(204);
-  } else {
-    console.warn("CORS Blocked:", origin);
-    res.status(403).json({ message: "CORS Policy Violation" });
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(204);
   }
-  next();
+  res.status(403).json({ message: "CORS Policy Violation" });
 });
 
 // Middleware
