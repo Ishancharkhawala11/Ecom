@@ -11,12 +11,12 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 const server = http.createServer(app);
 initializeSocket(server);
 
-// Allowed origins for CORS
+
 const allowedOrigins = [
-  "https://ecom-one-liart.vercel.app", // Production frontend domain
-  "http://localhost:3000",
+  "https://ecom-beryl-nine.vercel.app", // Production frontend domain
+  
   "http://localhost:5173"
-];
+]
 
 // Middleware to log incoming requests
 app.use((req, res, next) => {
