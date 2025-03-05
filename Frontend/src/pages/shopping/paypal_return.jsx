@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { capturePayment } from "@/store/Shop/order";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Paypal_return = () => {
   const dispatch = useDispatch();
@@ -10,6 +10,7 @@ const Paypal_return = () => {
   const params = new URLSearchParams(location.search); //get params from url
   const paymentId = params.get("paymentId")||"null";
   const payerId = params.get("PayerID")||'null';
+  const navigate=useNavigate()
   const {user}=useSelector(state=>state.auth)
   useEffect(() => {
     if (payerId && paymentId) {
@@ -23,9 +24,9 @@ const Paypal_return = () => {
         if(data.payload.success){
           sessionStorage.removeItem("current_order_id")
           localStorage.setItem('orderId',orderId)
-          setTimeout(() => {
-            window.location.href='/shop/payment-success'
-          }, 7000);
+         
+            navigate('/shop/payment-success')
+          
           // window.location.href='/shop/payment-success'
         }
       })
