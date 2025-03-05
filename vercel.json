@@ -11,14 +11,10 @@
         "config": { "distDir": "build" }
       }
     ],
-    "routes": [
+    "rewrites": [
       {
-        "src": "/api/(.*)",
-        "dest": "Backend/Index.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "Frontend/build/$1"
+        "source": "/api/(.*)",
+        "destination": "/Backend/Index.js"
       }
     ],
     "headers": [
