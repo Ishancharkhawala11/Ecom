@@ -1,0 +1,5 @@
+/api/*        /Backend/Index.js  200
+/shop/*       /index.html        200
+/shop/paypal-return* /index.html 200
+/admin/*      /index.html        200
+/*            /index.html        200
