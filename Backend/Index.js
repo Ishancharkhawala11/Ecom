@@ -16,7 +16,6 @@ const allowedOrigins = [
   "http://localhost:5173",
 ];
 
-// ✅ Move CORS middleware to the top
 app.use(
   cors({
     origin: allowedOrigins,
@@ -26,20 +25,23 @@ app.use(
   })
 );
 
-// ✅ Properly handle OPTIONS preflight requests
-app.options("*", cors()); // This allows all OPTIONS requests
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.status(200).send();
+});
 
-// Middleware to log incoming requests
 app.use((req, res, next) => {
-  console.log("Incoming Request Origin:", req.headers.origin);
+  console.log("Incoming Request:", req.method, req.url);
+  console.log("Origin:", req.headers.origin);
   next();
 });
 
-// Other middleware
 app.use(cookieParser());
 app.use(express.json());
 
-// Routes
 app.get("/", (req, res) => res.send("API is running..."));
 
 const authRouter = require("./routes/auth/auth_routes");
@@ -54,7 +56,6 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
-// Using Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -67,18 +68,15 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB Connected"))
   .catch((error) => console.log("MongoDB Error:", error));
 
-// Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("Error:", err.message);
   res.status(500).json({ message: err.message });
 });
 
-// Start Server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
