@@ -11,6 +11,40 @@
       "config": { "distDir": "Frontend/dist" }
     }
   ],
+  "routes": [
+    {
+      "src": "/api/custom-route",
+      "dest": "/Backend/custom-handler.js"
+    },
+    {
+      "src": "/special-page",
+      "dest": "/Frontend/dist/special.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/Backend/Index.js"
+    },
+    {
+      "src": "/shop/:path*",
+      "dest": "/Frontend/dist/index.html"
+    },
+    {
+      "src": "/shop/paypal-return(.*)",
+      "dest": "/Frontend/dist/index.html"
+    },
+    {
+      "src": "/admin/:path*",
+      "dest": "/Frontend/dist/index.html"
+    },
+    {
+      "src": "/:path*",
+      "dest": "/Frontend/dist/index.html"
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
@@ -36,8 +70,7 @@
       "source": "/:path*",
       "destination": "/Frontend/dist/index.html"
     }
-  ]
-,
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
