@@ -13,6 +13,10 @@
   ],
   "rewrites": [
     {
+      "source": "/(.*)",
+      "destination": "/"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/Backend/Index.js"
     },
