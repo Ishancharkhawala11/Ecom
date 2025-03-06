@@ -21,6 +21,10 @@
       "destination": "/Frontend/dist/index.html"
     },
     {
+      "source": "/shop/paypal-return",
+      "destination": "/Frontend/dist/index.html"
+    },
+    {
       "source": "/admin/:path*",
       "destination": "/Frontend/dist/index.html"
     },
