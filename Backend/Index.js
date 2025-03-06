@@ -12,9 +12,22 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 initializeSocket(server);
 
 const allowedOrigins = [
- "https://ecomshopease.netlify.app",
+  "https://ecomshopease.netlify.app",
   "http://localhost:5173",
 ];
+
+// ✅ Move CORS middleware to the top
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control",
+  })
+);
+
+// ✅ Properly handle OPTIONS preflight requests
+app.options("*", cors()); // This allows all OPTIONS requests
 
 // Middleware to log incoming requests
 app.use((req, res, next) => {
@@ -22,39 +35,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      console.log("CORS Request Origin:", origin);
-      if (!origin || allowedOrigins.includes(origin)) {
-        console.log("CORS Allowed:", origin);
-        callback(null, true);
-      } else {
-        console.warn("CORS Blocked:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control"
-  })
-);
-
-// Properly handle OPTIONS preflight requests
-app.options("*", (req, res) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Cache-Control");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    return res.sendStatus(204);
-  }
-  res.status(403).json({ message: "CORS Policy Violation" });
-});
-
-// Middleware
+// Other middleware
 app.use(cookieParser());
 app.use(express.json());
 
