@@ -21,7 +21,7 @@
       "destination": "/Frontend/dist/index.html"
     },
     {
-      "source": "/shop/paypal-return",
+      "source": "/shop/paypal-return(.*)",
       "destination": "/Frontend/dist/index.html"
     },
     {
