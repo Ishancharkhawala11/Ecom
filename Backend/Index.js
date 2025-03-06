@@ -14,9 +14,9 @@ initializeSocket(server);
 const allowedOrigins = [
   "https://ecomshopease.netlify.app",
   "http://localhost:5173",
+  "https://ecom-y2ng.onrender.com", // Added render.com backend URL
 ];
 
-// Middleware to log incoming requests
 app.use((req, res, next) => {
   console.log("Incoming Request Origin:", req.headers.origin);
   next();
@@ -37,7 +37,7 @@ app.use(
     },
     credentials: true,
     methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control"
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control",
   })
 );
 
