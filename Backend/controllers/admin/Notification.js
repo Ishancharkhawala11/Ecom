@@ -5,9 +5,9 @@ const initializeSocket = (server) => {
     const io = new Server(server, {
       cors: {
         origin:  [
-         "https://ecomshopease.netlify.app",
-          "http://localhost:5173",
-          
+        //  "https://ecomshopease.netlify.app",
+        //   "http://localhost:5173",
+          "*"
         ],
         methods: ["GET", "POST"],
       },

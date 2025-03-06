@@ -12,9 +12,10 @@ const { initializeSocket } = require("./controllers/admin/Notification");
 initializeSocket(server);
 
 const allowedOrigins = [
-  "https://ecomshopease.netlify.app",
+  // "https://ecomshopease.netlify.app",
   
-  "http://localhost:5173",
+  // "http://localhost:5173",
+  "*"
 ];
 
 
