@@ -16,24 +16,32 @@ const allowedOrigins = [
   "http://localhost:5173",
 ];
 
-// ✅ CORS Middleware
+// Middleware to log incoming requests
+app.use((req, res, next) => {
+  console.log("Incoming Request Origin:", req.headers.origin);
+  next();
+});
+
+// CORS Middleware
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log("CORS Request Origin:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
+        console.log("CORS Allowed:", origin);
         callback(null, true);
       } else {
-        console.warn("🚨 CORS Blocked:", origin);
+        console.warn("CORS Blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control"
   })
 );
 
-// ✅ Properly Handle OPTIONS Preflight Requests
+// Properly handle OPTIONS preflight requests
 app.options("*", (req, res) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
@@ -46,18 +54,11 @@ app.options("*", (req, res) => {
   res.status(403).json({ message: "CORS Policy Violation" });
 });
 
-// ✅ Middleware to log incoming requests
-app.use((req, res, next) => {
-  console.log("Incoming Request:", req.method, req.url);
-  console.log("Origin:", req.headers.origin);
-  next();
-});
-
-// ✅ Middleware
+// Middleware
 app.use(cookieParser());
 app.use(express.json());
 
-// ✅ Routes
+// Routes
 app.get("/", (req, res) => res.send("API is running..."));
 
 const authRouter = require("./routes/auth/auth_routes");
@@ -72,6 +73,7 @@ const shopReviewRouter = require("./routes/Shop/Review");
 const featureRouter = require("./routes/common/feature_route");
 const notification = require("./routes/admin/notification");
 
+// Using Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/product", adminProductsRouter);
 app.use("/api/shop/product", shopProducts);
@@ -84,18 +86,18 @@ app.use("/api/shop/reviews", shopReviewRouter);
 app.use("/api/common/feature", featureRouter);
 app.use("/api/admin", notification);
 
-// ✅ Connect to MongoDB
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((error) => console.log("❌ MongoDB Error:", error));
+  .then(() => console.log("MongoDB Connected"))
+  .catch((error) => console.log("MongoDB Error:", error));
 
-// ✅ Error Handling Middleware
+// Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.message);
+  console.error("Error:", err.message);
   res.status(500).json({ message: err.message });
 });
 
-// ✅ Start Server
+// Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
