@@ -23,10 +23,10 @@ const Paypal_return = () => {
         if(data.payload.success){
           sessionStorage.removeItem("current_order_id")
           localStorage.setItem('orderId',orderId)
-          setTimeout(() => {
-            window.location.href='/shop/payment-success'
-          }, 7000);
-          // window.location.href='/shop/payment-success'
+          // setTimeout(() => {
+          //   window.location.href='/shop/payment-success'
+          // }, 7000);
+          window.location.href='/shop/payment-success'
         }
       })
       //  console.log(getCurrentOrderId,'id');
