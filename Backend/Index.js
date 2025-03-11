@@ -74,7 +74,7 @@ app.use("/api/admin", notification);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.mongo_url)
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB error:", error));
 
