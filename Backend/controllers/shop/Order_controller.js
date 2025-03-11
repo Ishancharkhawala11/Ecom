@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 // const puppeteer = require("puppeteer");
-const { PDFDocument, rgb } = require('pdf-lib');
+const PDFDocument = require('pdfkit');
 const User=require('../../models/User');
 // const { log } = require("console");
 require('dotenv').config()
@@ -363,21 +363,20 @@ const generatePdf = async (order) => {
     .replace('{{ADDRESS_PINCODE}}', order.addressInfo[0].pincode)
     .replace('{{ORDER_ITEMS}}', orderItemsHtml);
 
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage();
-  const { width, height } = page.getSize();
-  const fontSize = 12;
+  const doc = new PDFDocument();
+  let buffers = [];
 
-  page.drawText(htmlContent, {
-    x: 50,
-    y: height - 50,
-    size: fontSize,
-    color: rgb(0, 0, 0),
-    lineHeight: 15,
-    maxWidth: width - 100
+  doc.on('data', buffers.push.bind(buffers));
+  doc.on('end', () => {});
+
+  doc.fontSize(12).text(htmlContent, {
+    width: 450,
+    align: 'left'
   });
 
-  const pdfBuffer = await pdfDoc.save();
+  doc.end();
+
+  const pdfBuffer = Buffer.concat(buffers);
   return pdfBuffer;
 };
 
