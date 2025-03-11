@@ -5,9 +5,10 @@ const Product = require("../../models/product");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
+const { PDFDocument, rgb } = require('pdf-lib');
 const User=require('../../models/User');
-const { log } = require("console");
+// const { log } = require("console");
 require('dotenv').config()
 const createOrder = async (req, res) => {
   try {
