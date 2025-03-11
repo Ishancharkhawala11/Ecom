@@ -212,7 +212,7 @@ const sendEmail = async (req, res) => {
   }
   const tempPath = path.join(__dirname, process.env.ORDER_HTML);
   let orderHtml = fs.readFileSync(tempPath, "utf8");
-  // const pdfBuffer=await generatePdf(order)
+  const pdfBuffer=await generatePdf(order)
   const transporter = nodemailer.createTransport({
     service: process.env.SERVICE,
     auth: {
@@ -228,13 +228,13 @@ const sendEmail = async (req, res) => {
     html: orderHtml
       .replaceAll("{{ORDER_NUMBER}}", order._id)
       .replaceAll("{{ORDER_TOTAL}}", order.totalAmount),
-      // attachments: [
-      //   {
-      //     filename: `Invoice_${order._id}.pdf`,
-      //     content: pdfBuffer, // Attach PDF from memory
-      //     contentType: "application/pdf",
-      //   },
-      // ],
+      attachments: [
+        {
+          filename: `Invoice_${order._id}.pdf`,
+          content: pdfBuffer, // Attach PDF from memory
+          contentType: "application/pdf",
+        },
+      ],
   };
   transporter.sendMail(message, (error, info) => {
     if (error) {
@@ -337,32 +337,21 @@ const getOrderDetails = async (req, res) => {
 // return pdfBuffer
 // }
 const generatePdf = async (order) => {
-  const user = await User.findById(order.userId)
+  const user = await User.findById(order.userId);
   if (!user) {
     return res.json({
       success: false,
       message: 'User not found'
-    })
+    });
   }
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: process.env.CHROME_PATH || (await puppeteer.executablePath())
-  });
+  const tempPath = path.join(__dirname, process.env.INVOICE_HTML);
+  let htmlContent = fs.readFileSync(tempPath, 'utf8');
 
-  const page = await browser.newPage();
-
-  const tempPath = path.join(__dirname, process.env.INVOICE_HTML)
-  let htmlContent = fs.readFileSync(tempPath, 'utf8')
   const orderItemsHtml = order.cartItems.map((item) => `
-    <tr>
-      <td>${item.title}</td>
-      <td>${item.quantity}</td>
-      <td>$${parseFloat(item.price).toFixed(2)}</td>
-      <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
-    </tr>`
-  ).join('')
+    ${item.title} - Quantity: ${item.quantity} - Price: $${parseFloat(item.price).toFixed(2)} - Total: $${(parseFloat(item.price) * item.quantity).toFixed(2)}
+  `).join('\n');
+
   htmlContent = htmlContent
     .replace('{{ORDER_ID}}', order._id)
     .replaceAll('{{ORDER_TOTAL}}', order.totalAmount.toFixed(2))
@@ -373,11 +362,23 @@ const generatePdf = async (order) => {
     .replace('{{ADDRESS_PINCODE}}', order.addressInfo[0].pincode)
     .replace('{{ORDER_ITEMS}}', orderItemsHtml);
 
-  await page.setContent(htmlContent)
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true })
-  await browser.close()
-  return pdfBuffer
-}
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage();
+  const { width, height } = page.getSize();
+  const fontSize = 12;
+
+  page.drawText(htmlContent, {
+    x: 50,
+    y: height - 50,
+    size: fontSize,
+    color: rgb(0, 0, 0),
+    lineHeight: 15,
+    maxWidth: width - 100
+  });
+
+  const pdfBuffer = await pdfDoc.save();
+  return pdfBuffer;
+};
 
 const changePaymentStatus=async(req,res)=>{
   try {
