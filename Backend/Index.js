@@ -11,7 +11,7 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 // Allowed Origins
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["https://ecom-frontend-qr3e.onrender.com"];
 
 app.use((req, res, next) => {
   console.log("Request Origin:", req.headers.origin);
