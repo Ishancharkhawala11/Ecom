@@ -9,4 +9,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    port: process.env.PORT || 5173,
+    host: "0.0.0.0",
+    strictPort: true,
+    allowedHosts: ["ecom-frontend-qr3e.onrender.com"], // Allow your deployed Render domain
+  }
 })
