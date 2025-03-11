@@ -306,7 +306,7 @@ const generatePdf=async(order)=>{
       message:'User not found'
     })
   }
-  const browser=await puppeteer.launch({headless:'new'})
+  const browser=await puppeteer.launch({headless:true})
  
   const page=await browser.newPage()
   // console.log(order.addressInfo[0].
