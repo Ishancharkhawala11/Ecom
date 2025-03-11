@@ -298,44 +298,87 @@ const getOrderDetails = async (req, res) => {
     });
   }
 };
-const generatePdf=async(order)=>{
-  const user=await User.findById(order.userId)
-  if(!user){
+// const generatePdf=async(order)=>{
+//   const user=await User.findById(order.userId)
+//   if(!user){
+//     return res.json({
+//       success:false,
+//       message:'User not found'
+//     })
+//   }
+//   const browser=await puppeteer.launch({headless:true})
+ 
+//   const page=await browser.newPage()
+//   // console.log(order.addressInfo[0].
+//   //   address," ",order.addressInfo[0].city,' ',user.userName);
+  
+//   const tempPath=path.join(__dirname,process.env.INVOICE_HTML)
+//   let htmlContent= fs.readFileSync(tempPath,'utf8')
+//   const orderItemsHtml=order.cartItems.map((item) => `
+//   <tr>
+//     <td>${item.title}</td>
+//     <td>${item.quantity}</td>
+//     <td>$${parseFloat(item.price).toFixed(2)}</td>
+//     <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+//   </tr>`
+// ).join('')
+// htmlContent=htmlContent
+// .replace('{{ORDER_ID}}',order._id)
+// .replaceAll('{{ORDER_TOTAL}}',order.totalAmount.toFixed(2))
+// .replace("{{ORDER_DATE}}", new Date(order.orderDate).toLocaleDateString())
+// .replaceAll('{{NAME}}',user.userName)
+// .replace('{{ADDRESS_AREA}}',order.addressInfo[0].address)
+// .replace('{{ADDRESS_CITY}}',order.addressInfo[0].city)
+// .replace('{{ADDRESS_PINCODE}}',order.addressInfo[0].pincode)
+// .replace("{{ORDER_ITEMS}}", orderItemsHtml);
+// await page.setContent(htmlContent)
+// const pdfBuffer=await page.pdf({format:"A4",printBackground:true})
+// await browser.close()
+// return pdfBuffer
+// }
+const generatePdf = async (order) => {
+  const user = await User.findById(order.userId)
+  if (!user) {
     return res.json({
-      success:false,
-      message:'User not found'
+      success: false,
+      message: 'User not found'
     })
   }
-  const browser=await puppeteer.launch({headless:true})
- 
-  const page=await browser.newPage()
-  // console.log(order.addressInfo[0].
-  //   address," ",order.addressInfo[0].city,' ',user.userName);
-  
-  const tempPath=path.join(__dirname,process.env.INVOICE_HTML)
-  let htmlContent= fs.readFileSync(tempPath,'utf8')
-  const orderItemsHtml=order.cartItems.map((item) => `
-  <tr>
-    <td>${item.title}</td>
-    <td>${item.quantity}</td>
-    <td>$${parseFloat(item.price).toFixed(2)}</td>
-    <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
-  </tr>`
-).join('')
-htmlContent=htmlContent
-.replace('{{ORDER_ID}}',order._id)
-.replaceAll('{{ORDER_TOTAL}}',order.totalAmount.toFixed(2))
-.replace("{{ORDER_DATE}}", new Date(order.orderDate).toLocaleDateString())
-.replaceAll('{{NAME}}',user.userName)
-.replace('{{ADDRESS_AREA}}',order.addressInfo[0].address)
-.replace('{{ADDRESS_CITY}}',order.addressInfo[0].city)
-.replace('{{ADDRESS_PINCODE}}',order.addressInfo[0].pincode)
-.replace("{{ORDER_ITEMS}}", orderItemsHtml);
-await page.setContent(htmlContent)
-const pdfBuffer=await page.pdf({format:"A4",printBackground:true})
-await browser.close()
-return pdfBuffer
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: process.env.CHROME_PATH || (await puppeteer.executablePath())
+  });
+
+  const page = await browser.newPage();
+
+  const tempPath = path.join(__dirname, process.env.INVOICE_HTML)
+  let htmlContent = fs.readFileSync(tempPath, 'utf8')
+  const orderItemsHtml = order.cartItems.map((item) => `
+    <tr>
+      <td>${item.title}</td>
+      <td>${item.quantity}</td>
+      <td>$${parseFloat(item.price).toFixed(2)}</td>
+      <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+    </tr>`
+  ).join('')
+  htmlContent = htmlContent
+    .replace('{{ORDER_ID}}', order._id)
+    .replaceAll('{{ORDER_TOTAL}}', order.totalAmount.toFixed(2))
+    .replace('{{ORDER_DATE}}', new Date(order.orderDate).toLocaleDateString())
+    .replaceAll('{{NAME}}', user.userName)
+    .replace('{{ADDRESS_AREA}}', order.addressInfo[0].address)
+    .replace('{{ADDRESS_CITY}}', order.addressInfo[0].city)
+    .replace('{{ADDRESS_PINCODE}}', order.addressInfo[0].pincode)
+    .replace('{{ORDER_ITEMS}}', orderItemsHtml);
+
+  await page.setContent(htmlContent)
+  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true })
+  await browser.close()
+  return pdfBuffer
 }
+
 const changePaymentStatus=async(req,res)=>{
   try {
     const {orderId}=req.body
