@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 // const puppeteer = require("puppeteer");
-const htmlPdf = require('html-pdf-node');
-const chromium = require('chrome-aws-lambda');
+const pdf = require('html-pdf');
+
 const User=require('../../models/User');
 // const { log } = require("console");
 require('dotenv').config()
@@ -369,16 +369,12 @@ const generatePdf = async (order) => {
     .replace('{{ADDRESS_PINCODE}}', order.addressInfo[0].pincode)
     .replace('{{ORDER_ITEMS}}', orderItemsHtml);
 
-  const file = { content: htmlContent };
-  const options = { 
-    format: 'A4',
-    args: chromium.args,
-    executablePath: await chromium.executablePath,
-    headless: true,
-  };
-
-  const pdfBuffer = await htmlPdf.generatePdf(file, options);
-  return pdfBuffer;
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlContent).toBuffer((err, buffer) => {
+      if (err) return reject(err);
+      resolve(buffer);
+    });
+  });
 };
 
 
