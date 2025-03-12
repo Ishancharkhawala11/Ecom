@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 // const puppeteer = require("puppeteer");
 const htmlPdf = require('html-pdf-node');
+const chromium = require('chrome-aws-lambda');
 const User=require('../../models/User');
 // const { log } = require("console");
 require('dotenv').config()
@@ -369,7 +370,12 @@ const generatePdf = async (order) => {
     .replace('{{ORDER_ITEMS}}', orderItemsHtml);
 
   const file = { content: htmlContent };
-  const options = { format: 'A4' };
+  const options = { 
+    format: 'A4',
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: true,
+  };
 
   const pdfBuffer = await htmlPdf.generatePdf(file, options);
   return pdfBuffer;
