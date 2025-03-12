@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 // const puppeteer = require("puppeteer");
-const PDFDocument = require('pdfkit');
+const htmlPdf = require('html-pdf-node');
 const User=require('../../models/User');
 // const { log } = require("console");
 require('dotenv').config()
@@ -350,8 +350,13 @@ const generatePdf = async (order) => {
   let htmlContent = fs.readFileSync(tempPath, 'utf8');
 
   const orderItemsHtml = order.cartItems.map((item) => `
-    ${item.title} - Quantity: ${item.quantity} - Price: $${parseFloat(item.price).toFixed(2)} - Total: $${(parseFloat(item.price) * item.quantity).toFixed(2)}
-  `).join('\n');
+    <tr>
+      <td>${item.title}</td>
+      <td>${item.quantity}</td>
+      <td>$${parseFloat(item.price).toFixed(2)}</td>
+      <td>$${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
+    </tr>
+  `).join('');
 
   htmlContent = htmlContent
     .replace('{{ORDER_ID}}', order._id)
@@ -363,22 +368,13 @@ const generatePdf = async (order) => {
     .replace('{{ADDRESS_PINCODE}}', order.addressInfo[0].pincode)
     .replace('{{ORDER_ITEMS}}', orderItemsHtml);
 
-  const doc = new PDFDocument();
-  let buffers = [];
+  const file = { content: htmlContent };
+  const options = { format: 'A4' };
 
-  doc.on('data', buffers.push.bind(buffers));
-  doc.on('end', () => {});
-
-  doc.fontSize(12).text(htmlContent, {
-    width: 450,
-    align: 'left'
-  });
-
-  doc.end();
-
-  const pdfBuffer = Buffer.concat(buffers);
+  const pdfBuffer = await htmlPdf.generatePdf(file, options);
   return pdfBuffer;
 };
+
 
 const changePaymentStatus=async(req,res)=>{
   try {
