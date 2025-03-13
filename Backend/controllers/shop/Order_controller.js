@@ -376,7 +376,7 @@ const generatePdf = async (order) => {
     });
   });
 };
-
+ 
 
 const changePaymentStatus=async(req,res)=>{
   try {
