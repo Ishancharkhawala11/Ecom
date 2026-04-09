@@ -22,52 +22,32 @@ router.get("/config", (_req, res) => {
   });
 });
 
-router.post("/create-order", protect, async (req, res) => {
+async function createHandler(req, res) {
   try {
     if (!isConfigured()) {
       return res.status(503).json({ message: "PayPal is not configured on the server" });
     }
     const { items, shippingAddress, addressId } = req.body;
-    console.log("[paypal/create-order] start", {
-      userId: String(req.user?._id || ""),
-      itemCount: Array.isArray(items) ? items.length : 0,
-      addressId: addressId || null
-    });
     const { totalAmount } = await prepareOrderPayload(req.user._id, items, {
       shippingAddress,
       addressId
     });
     const currency = getCurrency();
     const paypalOrder = await createPayPalOrder(totalAmount, currency);
-    console.log("[paypal/create-order] success", {
-      orderId: paypalOrder?.id || "",
-      currency,
-      totalAmount
-    });
     return res.json({ id: paypalOrder.id });
   } catch (error) {
+    console.error("[paypal/create] failed", error);
     const code = error.statusCode || 500;
-    console.error("[paypal/create-order] failed", {
-      message: error.message,
-      code,
-      details: error.paypalDetails || null,
-      detailsJson: error.paypalDetails ? JSON.stringify(error.paypalDetails) : null
-    });
-    return res.status(code).json({ message: error.message });
+    return res.status(code).json({ message: error.message || "PayPal payment creation failed" });
   }
-});
+}
 
-router.post("/capture-order", protect, async (req, res) => {
+async function captureHandler(req, res) {
   try {
     if (!isConfigured()) {
       return res.status(503).json({ message: "PayPal is not configured on the server" });
     }
     const { orderID, items, shippingAddress, addressId } = req.body;
-    console.log("[paypal/capture-order] start", {
-      userId: String(req.user?._id || ""),
-      orderID: orderID || "",
-      itemCount: Array.isArray(items) ? items.length : 0
-    });
     if (!orderID) {
       return res.status(400).json({ message: "orderID is required" });
     }
@@ -76,6 +56,7 @@ router.post("/capture-order", protect, async (req, res) => {
       return res.status(400).json({ message: "Payment was not completed" });
     }
     const captureId = extractCaptureId(captureResponse);
+
     const order = await finalizeShopOrder(
       req.user._id,
       items,
@@ -85,21 +66,17 @@ router.post("/capture-order", protect, async (req, res) => {
         paypalCaptureId: captureId
       }
     );
-    console.log("[paypal/capture-order] success", {
-      orderID,
-      captureId
-    });
     return res.status(201).json(order);
   } catch (error) {
+    console.error("[paypal/capture] failed", error);
     const code = error.statusCode || 500;
-    console.error("[paypal/capture-order] failed", {
-      message: error.message,
-      code,
-      details: error.paypalDetails || null,
-      detailsJson: error.paypalDetails ? JSON.stringify(error.paypalDetails) : null
-    });
-    return res.status(code).json({ message: error.message });
+    return res.status(code).json({ message: error.message || "PayPal capture failed" });
   }
-});
+}
+
+router.post("/create", protect, createHandler);
+router.post("/create-order", protect, createHandler);
+router.post("/capture", protect, captureHandler);
+router.post("/capture-order", protect, captureHandler);
 
 module.exports = router;

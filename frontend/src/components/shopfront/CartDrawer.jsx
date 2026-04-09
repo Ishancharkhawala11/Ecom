@@ -251,7 +251,7 @@ export function CartDrawer({
         onClick={onClose}
         aria-label="Close"
       />
-      <div className="relative flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+      <div className="relative flex h-full w-full max-w-md min-h-0 flex-col overflow-hidden bg-white shadow-2xl">
         <div className="flex items-start justify-between border-b border-neutral-200 px-5 py-4">
           <div>
             <h2 className="text-base font-semibold uppercase tracking-wider text-neutral-900">Order summary</h2>
@@ -267,7 +267,7 @@ export function CartDrawer({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4" style={{ WebkitOverflowScrolling: "touch" }}>
           {!cart.length && (
             <p className="py-16 text-center text-sm text-neutral-500">Your bag is empty.</p>
           )}
@@ -321,7 +321,10 @@ export function CartDrawer({
           </ul>
         </div>
 
-        <div className="border-t border-neutral-200 bg-neutral-50 px-5 py-4">
+        <div
+          className="max-h-[55vh] overflow-y-auto overscroll-contain border-t border-neutral-200 bg-neutral-50 px-5 py-4"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           <div className="mb-3">
             <div className="mb-1 flex justify-between text-xs text-neutral-600">
               <span>Shipping</span>
